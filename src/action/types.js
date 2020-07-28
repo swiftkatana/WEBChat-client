@@ -1,0 +1,15 @@
+export const  SIGN_IN="SIGN_IN";
+   export const  SIGN_OUT="SIGN_OUT";
+   export const  CREATE_ITEM ="CREATE_ITEM";
+   export const  FETCH_ITEMS ="FETCH_ITEMS";
+  export  const  FETCH_ITEM ="FETCH_ITEM";
+  export  const  DELETE_ITEM ="DELETE_ITEM";
+  export  const  EDIT_ITEM ="EDIT_ITEM";
+  export const SELECTED_ITEM="SELECTED_ITEM";
+export const CREATE_USER='CREATE_USER';
+export const LOGIN = 'LOGIN';
+export const ADD_ITEM_CART = 'ADD_ITEM';
+export const DELETE_ITEM_CART="DELETE_ITEM_CART"; 
+export const EMPTY_CART = 'EMPTY_CART';
+export const WHAT_SYSTEM ='WHAT_SYSTEM';
+export const SHOW_ADD_ITEM_TO_CART='SHOW_ADD_ITEM_TO_CART';
