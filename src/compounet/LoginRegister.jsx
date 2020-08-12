@@ -3,11 +3,87 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Field,reduxForm} from 'redux-form'
 
-import {signIn,signOut,createUser,loginUser} from '../action'
+import {signIn,signOut,createUser,loginUser,openChat,changeLeg} from '../action'
+import { Container } from 'react-bootstrap';
+import { Fab } from '@material-ui/core';
 // import server from '../api/myserver';
 // import GoogleAuth from './GoogleAuth';
 
-
+const Leg={
+    eng:{
+        login:{
+            buttonForLogin:'Press For Login'
+            ,leabel:'Login',
+            button:'Login'
+        },
+        register:{
+            buttonForRegister:'Press For Sign up'
+            ,leabel:'Sign up',
+            button:'Register'
+        },
+        email:{
+            error:'Invalid email',
+            leabel:'Email'
+        },
+        password:{
+            error:'Your password must include at least 8 characters. At least 1 number And symbol (like !@#%).  ',
+            leabel:'Password'
+        },
+        firstName:{
+            error:'You must enter a first name without numbers and contain at least 2 characters',
+            leabel:'FirstName'
+        },
+        lastName:{
+            error:'You must enter a last name without numbers and contain at least 2 characters',
+            leabel:'LastName'
+        },
+        address:{
+            error:'Need to enter full address city street number house',
+            leabel:'full address'
+        },
+        phone:{
+            error:'Need to enter phone number',
+            leabel:'phone number'
+        }
+    },
+    heb:{
+        login:{
+            buttonForLogin:'לחץ כאן להתחבר'
+            ,leabel:'להתחבר לאתר',
+            button:'להתחבר'
+        },
+        register:{
+            buttonForRegister:'לחץ כאן להרשם'
+            ,leabel:'הרשמה לאתר',
+            button:'להירשם'
+        },
+        email:{
+            error:'אימייל הינו תקין',
+            leabel:'אימייל'
+        },
+        password:{
+            error:'וספרות (A-Z)ותו גדול (a-z)  על הסיסמה להיות מינימום 7 תווים ולהכיל תווים  ',
+            leabel:'סיסמה'
+        },
+        firstName:{
+            error:'צריך להכניס שם פרטי בלי מספרים ולהכיל 2 תווים לפחות',
+            leabel:'שם פרטי'
+        },
+        lastName:{
+            error:'צריך להכניס שם משפחה בלי מספרים ולהכיל 2 תווים לפחות',
+            leabel:'שם משפחה'
+        },
+        address:{
+            error:'צריך להכניס כתובת מלאה עיר רחוב מספר בית',
+            leabel:'כתובת מלאה'
+        },
+        phone:{
+            error:'צריך להכניס מספר טלפון',
+            leabel:'מספר טלפון'
+        }
+       
+    }
+}
 
 
 
@@ -28,11 +104,12 @@ class Login extends React.Component{
         emailError:''
     }
     onSubmitR=(formValues)=>{
-        this.props.createUser(formValues,this.props.signIn);
+        this.props.createUser(formValues,this.props.signIn,this.props.openChat);
 
     }
     onSubmitL=(formValues)=>{
-        this.props.loginUser(formValues,this.props.signIn);
+        
+        this.props.loginUser(formValues,this.props.signIn,this.props.openChat);
 
     }
 
@@ -54,8 +131,8 @@ class Login extends React.Component{
         const className=`${bg?'mb-3':'col-md-6 mb-3'}  ${meta.error&&meta.touched?"":""}`;
         const type1 =type||'text';
         return<div className={className}>
-          <label htmlFor="phone">  {label}</label>
-         {text?   <input {...input} type={type1} placeholder={placeholder} value={text} className={`form-control  ${meta.error&&meta.touched?"alert alert-danger":""}`}  required=""/>:   <input {...input} type={type1} placeholder={placeholder}  className={`form-control  ${meta.error&&meta.touched?"alert alert-danger":""}`}   required=""/>}
+          <label htmlFor={label}>  {label}</label>
+         {text?   <input {...input} type={type1} name={label} autoComplete='on' placeholder={placeholder} value={text} className={`form-control  ${meta.error&&meta.touched?"alert alert-danger":""}`}  required=""/>:   <input {...input} name={label} autoComplete='on' type={type1} placeholder={placeholder}  className={`form-control  ${meta.error&&meta.touched?"alert alert-danger":""}`}   required=""/>}
             {this.renderError(meta)}
           </div>
         
@@ -73,16 +150,14 @@ class Login extends React.Component{
         if(this.state.whatToShow){
             return(
             <div className="btn-group ">
-                    <h1 className="btn btn-success  " type='button'  onClick={()=>this.setState({whatToShow:false})} >לחץ בשביל להירשם</h1>  
-                    {/* <GoogleAuth /> */}
+                    <h1 className="btn btn-success  " type='button'  onClick={()=>this.setState({whatToShow:false})} >{Leg[this.props.leg].register.buttonForRegister}</h1>  
              
 
             </div> )
         }else{
             return(
             <div  className="btn-group   ">
-                <h1  className="btn btn-success" type='button' onClick={ ()=> this.setState({whatToShow:true})} >לחץ בשביל להתחבר</h1>
-                    {/* <GoogleAuth /> */}
+                <h1  className="btn btn-success" type='button' onClick={ ()=> this.setState({whatToShow:true})} >{Leg[this.props.leg].login.buttonForLogin}</h1>
             </div>  
              )
         }
@@ -121,15 +196,15 @@ class Login extends React.Component{
         return(
             <div className='form-group right-text' >
             
-             <h1  className='right-text'>כניסה לאתר  </h1>
+             <h1  className='right-text'>{Leg[this.props.leg].login.leabel}  </h1>
             {this.renderChangeMod()}
         
              <form onSubmit={this.props.handleSubmit(this.onSubmitL)} className="error">
-             <Field bg type='email'  autocomplete="current-password"  name="email" component={this.renderInput} label="אימייל " />
-                <Field bg type='password' name="password" component={this.renderInput} label="סיסמה" />
+             <Field bg type='email'  autocomplete="current-password"  name="email" component={this.renderInput} label={Leg[this.props.leg].email.leabel}/>
+                <Field bg type='password' name="password" component={this.renderInput} label={Leg[this.props.leg].password.leabel} />
                 {this.renderErrorLogin()}
 
-                <button className="btn btn-primary">להתחבר</button>
+                <button className="btn btn-info form-control">{Leg[this.props.leg].login.button} </button>
              </form>
                 
             </div>
@@ -143,22 +218,21 @@ class Login extends React.Component{
         return(
             <div className='form-group right-text' >
 
-            <h1 className='right-text'  >ברוך הבא להרשמה לאתר </h1>
+            <h1 className='right-text'  >{Leg[this.props.leg].register.leabel} </h1>
             {this.renderChangeMod()}
            
-            <form b onSubmit={this.props.handleSubmit(this.onSubmitR)} className="error">
+            <form onSubmit={this.props.handleSubmit(this.onSubmitR)} className="error">
             <div className='row'>
-            <Field type='email' clas={this.props.user==='dup'?'error':null} name="email" placeholder=" you@example.com"  component={this.renderInput} label="אימייל" />
-                <Field type='password' name="password" component={this.renderInput} label="סיסמה" />
+            <Field type='email' clas={this.props.user==='dup'?'error':null} name="email" placeholder=" you@example.com"  component={this.renderInput} label={Leg[this.props.leg].email.leabel}/>
+                <Field  type='password' name="password" component={this.renderInput} label={Leg[this.props.leg].password.leabel} />
             </div>
         
                 <div className='row'>
          
-                        <Field name="firstName" component={this.renderInput} label="שם פרטי" />
-                <Field name="lastName" component={this.renderInput} label="שם משפחה" />
+                        <Field name="firstName" component={this.renderInput} label={Leg[this.props.leg].firstName.leabel} />
+                <Field name="lastName" component={this.renderInput} label={Leg[this.props.leg].lastName.leabel} />
          </div>
         
-            
               
                 <div className='row'>
          
@@ -167,7 +241,7 @@ class Login extends React.Component{
                 {this.renderErrorRegister()}
 
                <div className='row'>
-               <button className="btn btn-info form-control">הרשמה</button>
+               <button className="btn btn-info form-control">{Leg[this.props.leg].register.button} </button>
 
                </div>
             </form>
@@ -177,7 +251,15 @@ class Login extends React.Component{
         
 
     }
+     renderImgLeg=()=>{
+        if(this.props.leg==='eng'){
+          return <img src='heb.png' onClick={()=>this.props.changeLeg('heb')} className='imgLeg' alt='icon for change leg right now eng' />
+        }
+        return <img src='uk.png' onClick={()=>this.props.changeLeg('eng')} className='imgLeg' alt='icon for change leg right now hebrew' />
 
+
+
+      }
         renderLoginOrRegister(){
     if(this.state.whatToShow)return this.login();
     else return this.register();
@@ -189,9 +271,12 @@ class Login extends React.Component{
     render(){
 
         return(
-            <div className=" text-right     ">
+            <Container className=" text-right"   >
                 {this.renderLoginOrRegister()}
-            </div>)
+                <Fab   color="primary" aria-label="add">
+                   {this.renderImgLeg()}
+                </Fab>`
+            </Container>)
 
 
         }
@@ -232,25 +317,23 @@ const validate=(formdit,state)=>{
   // }
   const errors ={}
 
-
   if(validateEmail(formdit.email)===false){
-      if(formdit.email===0)  errors.email="  אימייל הינו שדה חובה  "
-     else errors.email="  אימייל הינו תקין "
+     errors.email=Leg[state.leg].email.error
   }
   if(validatePassword(formdit.password)===false){
-      errors.password=" וספרות (A-Z)ותו גדול (a-z)  על הסיסמה להיות מינימום 7 תווים ולהכיל תווים   "
+      errors.password=Leg[state.leg].password.error
   }
-  if(!formdit.firstName||formdit.firstName<=3||/[0-9]/.test(formdit.firstName)){
-         errors.firstName="צריך להכניס שם פרטי בלי מספרים ולהכיל  3 תווים לפחות"
+  if(!formdit.firstName||formdit.firstName<=2||/[0-9]/.test(formdit.firstName)){
+         errors.firstName=Leg[state.leg].firstName.error
   }
-  if(!formdit.lastName||formdit.lastName<=3||/[0-9]/.test(formdit.lastName)){
-      errors.lastName="צריך להכניס שם פרטי בלי מספרים ולהכיל  3 תווים לפחות    "
+  if(!formdit.lastName||formdit.lastName<=2||/[0-9]/.test(formdit.lastName)){
+      errors.lastName=Leg[state.leg].lastName.error
   }
   if(!formdit.address||formdit.address<=8||!/[0-9]/.test(formdit.address)){
-    errors.address="צריך להכניס כתובת מלאה עיר רחוב מספר בית    "
+    errors.address=Leg[state.leg].address.error
 }
 if(!formdit.phone||formdit.phone<=7){
-  errors.phone="צריך להכניס מספר טלפון     "
+  errors.phone=Leg[state.leg].phone.error
 }
 
 
@@ -258,7 +341,7 @@ if(!formdit.phone||formdit.phone<=7){
 }
 
 const mapStateToProps =(state)=>{
-    return{isSignedIn:state.auth.isSignedIn,user:state.user};
+    return{isSignedIn:state.auth.isSignedIn,user:state.user,leg:state.leg};
 }
 const FormCom = reduxForm(
     {
@@ -266,4 +349,4 @@ const FormCom = reduxForm(
         validate
     })(Login)
 
-export default connect(mapStateToProps,{signIn,signOut,createUser,loginUser})(FormCom);
+export default connect(mapStateToProps,{signIn,signOut,createUser,loginUser,openChat,changeLeg})(FormCom);
