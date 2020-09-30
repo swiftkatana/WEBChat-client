@@ -5,9 +5,10 @@ import socketIOClient from 'socket.io-client'
 
 import {add_Friend,updatefriend, deleteFriend} from '../../action'
 import myserver from '../../api/myserver';
+import out from '../../api/serverIP';
 
 
-const ENDPOINT = "http://84.108.77.60:1029";
+const ENDPOINT =out;
 
 class LogicArea extends React.Component{
     
