@@ -22,11 +22,7 @@ switch(action.type){
     case EDIT_CHAT:return{...state,[action.payload._id]:action.payload};
     // case DELETE_CHAT:return _.omit(state,action.payload);
     case OPEN_CHAT:
-
-    // state.chats.forEach(chat=>{
-    //     if(chat._id===action.payload) state.openChat=chat;
-    // })
-        state.openChat.chatId=action.payload
+        state.openChat=action.payload
     return{...state}
 
     default: return state;

@@ -1,5 +1,5 @@
 
-import  {CREATE_USER,LOGIN, SIGN_OUT,NEW_FRIEND,ACCEPT_FRIEND_REQ} from '../action/types'
+import  {CREATE_USER,LOGIN, SIGN_OUT,NEW_FRIEND,UPDATE_STATUS_FRIEND, DELETE_FRIEND} from '../action/types'
 
 
 
@@ -10,20 +10,28 @@ switch(action.type){
     case LOGIN: return action.payload 
     case SIGN_OUT: return null;
     case NEW_FRIEND: 
-    const AddNewFriend=true;
-    state.frindes.forEach(frinde => {
-            if(frinde._id===action.payload._id) AddNewFriend=false;
-        
-    });
-    if(AddNewFriend) state.frindes.push(action.payload);
+    if(!state.friends[action.payload._id]){
+        state.friends[action.payload._id]=action.payload;
+    }
     return{...state}
-    case ACCEPT_FRIEND_REQ:
+    case UPDATE_STATUS_FRIEND:
+        if(state.friends[action.payload._id]){
+            const {user,_id} = action.payload;
+            state.friends[_id]=user;
+                // switch(type){
+                //     case'accept':
+                //     state.friends[user._id].chatId=user.chatId
+                //     break
 
-    state.frindes.forEach(frinde=>{
-        if(frinde._id===action.payload) frinde.status='good';
-    })
-
+                //     default: return null
+                // }
+        }
     return{...state}
+    case DELETE_FRIEND:
+        if(state.friends[action.payload._id]){
+           delete state.friends[action.payload._id];
+        }
+        return{...state};
 
     default: return state;
 }

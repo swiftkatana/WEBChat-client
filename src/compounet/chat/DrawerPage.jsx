@@ -12,17 +12,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton  from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
-import { Icon, Button } from '@material-ui/core';
 import history from '../../history';
+import { Button } from '@material-ui/core';
 
 
 
@@ -103,47 +101,56 @@ function DrawerPage (props){
         const handleDrawerClose = () => {
           setOpen(false);
         };
-        // const renderImgLeg=()=>{
-        //   if(props.leg==='eng'){
-        //     return <img src='heb.png' onClick={()=>props.changeLeg('heb')} className='imgLeg' alt='icon for change leg right now eng' />
-        //   }
-        //   return <img src='uk.png' onClick={()=>props.changeLeg('eng')} className='imgLeg' alt='icon for change leg right now hebrew' />
+        
+        const onClickOpenFriendChat =(chatId)=>{
+            props.openChat(chatId);
 
 
-
-        // }
+        }
  
-        const renderLogOut=()=>{
-          if(!props.isLogin) return null
+        const renderLogOutAndProfile=()=>{
+          if(!props.isLogin) return( <ListItem onClick={()=>{history.push('/'); props.signOut()}} button key={'login buuton'}>
+          <ListItemIcon><img  className="fa fa-plus-circle" src='login.png' alt='login button' /> </ListItemIcon>  
+           <ListItemText primary={'Login \\ register'} />
+           </ListItem>)
 
-       else
-       console.log('show')
-         return    <ListItem onClick={()=>{history.push('/'); props.signOut()}} button key={'logOut'}>
-          <Icon className="fa fa-plus-circle" style={{ fontSize: 30 }} />
-          <Button variant="contained" color="secondary" disableElevation>
-        Logout
-      </Button>
-              </ListItem>
+         return ( <React.Fragment>
 
+          <ListItem onClick={()=>history.push('/profile')} button key={'profile buuton'}>
+          <ListItemIcon><img  className="fa fa-plus-circle" src={props.user.imageProfile} alt='profile button' /> </ListItemIcon>  
+           <ListItemText primary={props.user.firstName} />
+           </ListItem>
+         <ListItem onClick={()=>{history.push('/'); props.signOut()}} button key={'LogOut buuton'}>
+            <ListItemIcon><img  className="fa fa-plus-circle" src='logOut.png' alt='logOut button' /> </ListItemIcon>  
+            <ListItemText primary={'LogOut'} />
+       </ListItem>
+         </React.Fragment>)
         }
-        const AddFrindButton=()=>{
+        const AddFrindButtonAndFriendList=()=>{
           if(!props.isLogin||!props.user) return null
-          return    <ListItem onClick={()=>history.push('addFrind')} button key={'addFrind'}>
-          <Icon className="fa fa-plus-circle" style={{ fontSize: 30 }} />
-          <Button variant="contained" color="primary" disableElevation>
-            Add frind
-          </Button>
-        </ListItem>
+          return  (<>
+             <ListItem onClick={()=>history.push('addFrind')} button key={'addFrind'}>
+              <ListItemIcon><img  className="fa fa-plus-circle" src='serachF.png' alt='addFrind button' /> </ListItemIcon>  
+              <ListItemText primary={'Serach A Frined'} />
+           </ListItem>
+           <ListItem onClick={()=>history.push('friends.list')} button key={'friends.list'}>
+              <ListItemIcon><img  className="fa fa-plus-circle" src='friendsList.png' alt='friends.list button' /> </ListItemIcon>  
+              <ListItemText primary={'friends list'} />
+           </ListItem>
+           </>
+           )
         }
-
+        
         const renderFrindsList=()=>{
           if(!props.isLogin||!props.user) return null
-          if(!props.user.frindes) return null
-          return props.user.frindes.map((user, index) => (
-            <ListItem button key={user._id}>
-              <img src={user.imageIcon} alt='profile ' />
+          if(Object.keys(props.user.friends).length<0) return null
+          return Object.values(props.user.friends).map((user, index) => (
+            user.status==='accept'? 
+            <ListItem onClick={()=>onClickOpenFriendChat(user.chatId)} button key={user._id}>
+              <img src={user.imageProfile} alt='profile ' />
               <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-            </ListItem>
+            </ListItem>:null
+          
           ))
         }
         return (
@@ -157,7 +164,12 @@ function DrawerPage (props){
             >
               <Toolbar>
           {/* {renderImgLeg()}  */}
-                <IconButton
+    
+         
+                <Typography variant="h6" noWrap>
+                
+             </Typography>
+             <IconButton
                   color="inherit"
                   aria-label="open drawer"
                   onClick={handleDrawerOpen}
@@ -168,10 +180,6 @@ function DrawerPage (props){
                   <MenuIcon />
              
                 </IconButton>
-         
-                <Typography variant="h6" noWrap>
-             </Typography>
-               
               </Toolbar>
             </AppBar>
             <Drawer
@@ -184,32 +192,41 @@ function DrawerPage (props){
               }}
             >
          
-            
+      
               <div className={classes.drawerHeader}>
+           
                 <IconButton onClick={handleDrawerClose}>
                   {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
+               
               </div>
+              <Button variant="contained"  id='CWE' onClick={()=>{
+                if(history.location.pathname==='/') return null
+                history.push('')
+              }}>
+                  CWE
+                </Button>
               <Divider />
+              <List>
+              {renderLogOutAndProfile()}
 
-              {renderLogOut()}
               <Divider />
+              </List>
 
-              {AddFrindButton()}
-        
+              <List>
+
+
+              {AddFrindButtonAndFriendList()}
+
               <Divider />
+              </List>
+
               <List>
               {renderFrindsList()}
-              </List>
+
               <Divider />
-              <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                  <ListItem button key={text}>
-                    <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                    <ListItemText primary={text} />
-                  </ListItem>
-                ))}
               </List>
+         
             </Drawer>
             <main
               className={clsx(classes.content, {
@@ -229,7 +246,7 @@ function DrawerPage (props){
 }
     const mapStateToProps = (state) => ({
         user:state.user,
-        isLogin:state.auth.isSignedIn,
+        isLogin:state.auth.isLogin,
         leg:state.leg
     })
     

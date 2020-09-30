@@ -2,7 +2,6 @@ import React from 'react'
 import socketIOClient from 'socket.io-client' 
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
 
-
 function getTimeIn24Format() {
   var d = new Date();
   var n = d.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
@@ -10,10 +9,28 @@ function getTimeIn24Format() {
 }
 
 function getDate(){
-  var d = new Date();
-return {m:d.getMonth()+1,d:d.getDate(),y:d.getFullYear()}
+ let date=  new Date();
+ console.log(date);
+ return date
+// return {m:d.getMonth()+1,d:d.getDate(),y:d.getFullYear()}
   
 }
+var theirVideoTAg = document.querySelector("#theirVideoTAg");
+var myVideoTAg = document.querySelector("#myVideoTAg");
+
+var configuration = {
+  'iceServers': [{
+    'url': 'stun:stun.l.google.com:19302'
+  }]
+};
+var rtcPeerConn;
+//startStream();
+
+
+
+
+
+
 
 class ChatWindow extends React.Component{
   constructor(props) {
@@ -21,57 +38,129 @@ class ChatWindow extends React.Component{
     this.state={
       meassge:'',
       socket:socketIOClient(this.props.ENDPOINT),
-      meassges:[],
+      meassges:this.props.chat.meassges,
       whoIsTypeingNow:[],
       user:this.props.user,
-      chatId:this.props.chatId,
+      chatId:this.props.chat._id,
       audio: new Audio('msg.mp3')
   }
   this.el = React.createRef()
 
   }
     componentWillUnmount(){
-      this.state.socket.close('chat')
-      this.state.socket.close('typeing')
+      this.state.socket.close('chat'+this.state.chatId)
+      this.state.socket.close('typeing'+this.state.chatId)
     }
     
     componentDidMount(){
       this.scrollToBottom();
-      
 
-        this.state.socket.on('chat'+this.state.chatId,(data)=>{
-        this.scrollToBottom();
+      this.state.socket.emit('ready',this.state.chatId);
+      this.state.socket.on('announce'+this.state.chatId,(data)=>{
+        console.log(data)
+      })
+    
+     this.state.socket.emit('signal',{type:'create singling',message:'are you ready for a call?',room:this.state.chatId});
+          this.state.socket.on('signaling_message'+this.state.chatId,(data)=>{
 
-            this.setState({meassges:[...this.state.meassges,data]})
-        });
+            console.log(data.type);
+            if(!rtcPeerConn)this.startSignaling();
+
+            
+            if (data.type != "user_here") {
+              var message = JSON.parse(data.message);
+              if (message.sdp) {
+                rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp), function () {
+                  // if we received an offer, we need to answer
+                  if (rtcPeerConn.remoteDescription.type == 'offer') {
+                    rtcPeerConn.createAnswer(this.sendLocalDesc, this.logError);
+                  }
+                }, this.logError);
+              }
+              else {
+                rtcPeerConn.addIceCandidate(new RTCIceCandidate(message.candidate));
+              }
+            }
+          })
+
+          this.state.socket.on('chat'+this.state.chatId,(data)=>{
+          this.scrollToBottom();
+          if(data.senderId!==this.props.user.email) this.state.audio.play();
+              this.setState({meassges:[...this.state.meassges,data]})
+          });
+          
+          this.state.socket.on('typeing'+this.state.chatId,(data)=>{
+            if(data.show){
+              let add=true;
+              this.state.whoIsTypeingNow.forEach(name=>name===data.senderName? add=false:null )
+            if(add)this.setState({whoIsTypeingNow:[...this.state.whoIsTypeingNow,data.senderName]})
         
-        this.state.socket.on('typeing'+this.state.chatId,(data)=>{
-          if(data.show){
-            let add=true;
-            this.state.whoIsTypeingNow.forEach(name=>name===data.senderName? add=false:null )
-          if(add)this.setState({whoIsTypeingNow:[...this.state.whoIsTypeingNow,data.senderName]})
-      
-          }else {
-            this.setState({whoIsTypeingNow:this.state.whoIsTypeingNow.filter(name=>name!==data.senderName)});
-      
-          }
-      
-        });
+            }else {
+              this.setState({whoIsTypeingNow:this.state.whoIsTypeingNow.filter(name=>name!==data.senderName)});
+        
+            }
+        
+          });
 
 
 
       }
       componentDidUpdate() {
         this.scrollToBottom();
-
+      }
+      startSignaling=()=>{
+        console.log('start signaling')
+        rtcPeerConn = new RTCPeerConnection(configuration);
+	
+				// send any ice candidates to the other peer
+				rtcPeerConn.onicecandidate = function (evt) {
+					if (evt.candidate)
+						this.state.socket.emit('signal',{"type":"ice candidate", "message": JSON.stringify({ 'candidate': evt.candidate }), "room":this.state.chatId});
+					console.log("completed that ice candidate...");
+				};
+				
+				// let the 'negotiationneeded' event trigger offer generation
+				rtcPeerConn.onnegotiationneeded = function () {
+					console.log("on negotiation called");
+					rtcPeerConn.createOffer(this.sendLocalDesc, this.logError);
+				}
+				
+				// once remote stream arrives, show it in the remote video element
+				rtcPeerConn.onaddstream = function (evt) {
+					console.log("going to add their stream...");
+					theirVideoTAg.srcObject = (evt.stream);
+				};
+				
+				// get a local stream, show it in our video tag and add it to be sent
+				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+				navigator.getUserMedia({
+					'audio': false,
+					'video': true
+				}, function (stream) {
+					console.log("going to display my stream...");
+				myVideoTAg.srcObject = (stream);
+					rtcPeerConn.addStream(stream);
+				}, this.logError);
+      }
+       sendLocalDesc=(desc)=> {
+				rtcPeerConn.setLocalDescription(desc, function () {
+					console.log("sending local description");
+					this.state.socket.emit('signal',{"type":"SDP", "message": JSON.stringify({ 'sdp': rtcPeerConn.localDescription }), "room":this.state.chatId});
+				}, this.logError);
+			}
+			
+			 logError=(error)=>{
+				console.log(error.name + ': ' + error.message);
+			}
+      addmessage=(message)=>{
+        alert(message);
       }
       onChangeText=(e)=>{
-        console.log(e.currentTarget.value)
         this.setState({meassge:e.currentTarget.value});
         this.state.socket.emit('typeing', e.currentTarget.value?{senderName:this.state.user.firstName,show:true,chatId:this.state.chatId}:{senderName:this.state.user.firstName,show:false,chatId:this.state.chatId});
       }
       scrollToBottom = () => {
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+        this.meassgesEnd.scrollIntoView({ behavior: "smooth" });
       }
     
       onEnterPress = (e) => {
@@ -79,6 +168,11 @@ class ChatWindow extends React.Component{
           this.handlerClickMSG(e);
           
         }
+        // if(e.keyCode === 13 && e.shiftKey &&this.state.meassge ){
+        //   console.log('wow')
+        //   this.setState({meassge:this.state.meassge+='\n\r\t'})
+
+        // }
       }
       
       handlerClickMSG=(e)=>{
@@ -86,7 +180,7 @@ class ChatWindow extends React.Component{
         if(!this.state.meassge) return null
 
         this.setState({meassge:''})
-        this.state.socket.emit('typeing', e.currentTarget.value?{senderName:this.state.user.firstName,show:true,chatId:this.state.chatId}:{senderName:this.state.user.firstName,show:false,chatId:this.state.chatId});
+        this.state.socket.emit('typeing',{senderName:this.state.user.firstName,show:false,chatId:this.state.chatId});
         this.state.socket.emit('chat',{
             message:this.state.meassge,
             senderName:this.state.user.firstName,
@@ -115,19 +209,17 @@ else if(this.state.whoIsTypeingNow.length===1){
 }
      
       renderDateOfCreateMessage=(date)=>{
-  var d = new Date();
-  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
-        var firstDate = new Date(date.y,date.m,date.d); // 1 Jan 2015
-        var secondDate =  Date(d.getFullYear(), d.getMonth()+1, d.getDate()); // 1 Feb 2015
-        var numberOfDays = Math.round(Math.abs((firstDate - secondDate) / oneDay));
-        console.log(numberOfDays)
+         var d = new Date();
+       
+        date= new Date(date);
+        var numberOfDays =Math.floor((d - date) / (1000*60*60*24))
         switch (numberOfDays) {
           case 0 :
             return 'today'
           case 1:
-            return 'Today'            
+            return 'Yesterday'            
           case 2:
-            return 'Yesterday'
+            return '3 days ago'
           default:
 
             return `${date.d}/${date.m}/${date.y}`
@@ -144,9 +236,9 @@ else if(this.state.whoIsTypeingNow.length===1){
 
       renderMessgesList=()=>{
         return this.state.meassges.map((message,index)=>{
-          if(this.state.meassges.length-1===index&&message.senderId!==this.props.user.email) this.state.audio.play();
+       
             return (
-              <div key={message.message}
+              <div key={message.message+index}
                     aria-live="polite"
                     aria-atomic="true"
                     style={{
@@ -183,6 +275,8 @@ else if(this.state.whoIsTypeingNow.length===1){
         return (
             <div id='mario-chat'>
               <div id='chat-window'>
+             
+              <video id='theirVideoTAg' autoPlay > <video id='myVideoTag' autoPlay ></video></video>
               <div id="feedback">{this.renderSomeOneIsTypeing()}</div>            
 
               
@@ -195,7 +289,7 @@ else if(this.state.whoIsTypeingNow.length===1){
       
               </div>
               <div id='hideScrool' style={{ float:"left", clear: "both" }}
-             ref={(el) => { this.messagesEnd = el; }}>
+             ref={(el) => { this.meassgesEnd = el; }}>
         </div>
       
               </div>

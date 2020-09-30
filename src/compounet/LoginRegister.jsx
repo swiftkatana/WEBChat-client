@@ -113,7 +113,6 @@ class Login extends React.Component{
 
     }
 
-
   
     renderError=({error,touched})=>{
         if(error&&touched){
@@ -194,9 +193,9 @@ class Login extends React.Component{
     login(){
         
         return(
-            <div className='form-group right-text' >
+            <div className={`form-group ${this.props.leg==='eng'?'textLeft':"textRight"}`} >
             
-             <h1  className='right-text'>{Leg[this.props.leg].login.leabel}  </h1>
+             <h1  >{Leg[this.props.leg].login.leabel}  </h1>
             {this.renderChangeMod()}
         
              <form onSubmit={this.props.handleSubmit(this.onSubmitL)} className="error">
@@ -216,9 +215,9 @@ class Login extends React.Component{
 
     register(){
         return(
-            <div className='form-group right-text' >
+            <div className={`form-group ${this.props.leg==='eng'?'textLeft':"textRight"}`} >
 
-            <h1 className='right-text'  >{Leg[this.props.leg].register.leabel} </h1>
+            <h1 className={this.props.leg==='eng'?'textLeft':"textRight"}  >{Leg[this.props.leg].register.leabel} </h1>
             {this.renderChangeMod()}
            
             <form onSubmit={this.props.handleSubmit(this.onSubmitR)} className="error">
@@ -253,12 +252,9 @@ class Login extends React.Component{
     }
      renderImgLeg=()=>{
         if(this.props.leg==='eng'){
-          return <img src='heb.png' onClick={()=>this.props.changeLeg('heb')} className='imgLeg' alt='icon for change leg right now eng' />
+          return <img src='heb.png' onClick={()=>this.props.changeLeg('heb')} className='imgLeg' alt='icon for change leg right now hebrew' />
         }
-        return <img src='uk.png' onClick={()=>this.props.changeLeg('eng')} className='imgLeg' alt='icon for change leg right now hebrew' />
-
-
-
+        return <img src='uk.png' onClick={()=>this.props.changeLeg('eng')} className='imgLeg' alt='icon for change leg right now eng' />
       }
         renderLoginOrRegister(){
     if(this.state.whatToShow)return this.login();
@@ -275,7 +271,7 @@ class Login extends React.Component{
                 {this.renderLoginOrRegister()}
                 <Fab   color="primary" aria-label="add">
                    {this.renderImgLeg()}
-                </Fab>`
+                </Fab>
             </Container>)
 
 
@@ -341,7 +337,7 @@ if(!formdit.phone||formdit.phone<=7){
 }
 
 const mapStateToProps =(state)=>{
-    return{isSignedIn:state.auth.isSignedIn,user:state.user,leg:state.leg};
+    return{isLogin:state.auth.isLogin,user:state.user,leg:state.leg};
 }
 const FormCom = reduxForm(
     {

@@ -2,12 +2,19 @@
 import history from '../history';
 
 import server from '../api/myserver';
-import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,DELETE_CHAT,WHAT_SYSTEM, OPEN_CHAT,ACCEPT_FRIEND_REQ,NEW_FRIEND, CHANGE_LEGUAGE}  from './types';
+import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,DELETE_CHAT,WHAT_SYSTEM, OPEN_CHAT,UPDATE_STATUS_FRIEND,NEW_FRIEND, CHANGE_LEGUAGE,DELETE_FRIEND}  from './types';
 
+
+// eslint-disable-next-line no-unused-vars
+const config = {
+    onUploadProgress: function(progressEvent) {
+      var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+      console.log(percentCompleted)
+    }
+  }
     export const openChat =(chatId)=>async (dispatch)=>{
-        
-        const {data} = await server.post('getChat',chatId)
-
+        const {data} = await server.post('/api/chat/getChat',{chatId})
+        console.log(data)
         dispatch({
             type:OPEN_CHAT,
             payload:data
@@ -21,7 +28,8 @@ import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,
 
     export const createCHAT =formValues => async (dispatch) =>{
         
-        const {data} = await server.post("/addCHAT",formValues);
+        const {data} = await server.post("/api/chat/createchat",formValues);
+        console.log(data)
        
             dispatch({type:CREATE_CHAT,payload:data});
       
@@ -29,25 +37,26 @@ import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,
       
 
     };
-    export const AcceptFriendReq=(friendId)=>{
+    export const updatefriend=(data)=>{
         return{
-            type:ACCEPT_FRIEND_REQ,
-            payload:friendId
+            type:UPDATE_STATUS_FRIEND,
+            payload:data
         }
 
     }
-    export const add_Friend=(newUser)=>{
+    export const add_Friend=(newFriend)=>{
 
 
             return{
                 type:NEW_FRIEND,
-                payload:newUser
+                payload:newFriend
             }
 
     }
 
     export const fetchChats =(whatToTake)=> async dispatch =>{
-        const res = await server.get('/CHATs'+whatToTake);
+        const res = await server.get('/api/user/CHATs'+whatToTake);
+        console.log(res)
         dispatch({
             type:FETCH_CHATS,
             payload:res.data
@@ -56,12 +65,20 @@ import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,
     }
 
     export const fetchChat =(CHATId)=> async dispatch =>{
-        const res = await server.get(`/CHAT${CHATId}`);
+        const res = await server.get(`/api/user/CHAT${CHATId}`);
+        console.log(res)
 
         dispatch({
             type:FETCH_CHAT,
             payload:res.data
         });
+    }   
+    export const deleteFriend=friend=>{
+        return{
+            type:DELETE_FRIEND,
+            payload:friend
+        }
+        
     }
 
 
@@ -78,22 +95,26 @@ import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,
         dispatch({type:DELETE_CHAT,payload:rendId});
     setTimeout(()=>{history.push("/")},40) ;
     }
-    export const createUser=(formValues,signIn,openChat)=> async dispatch=>{
+    export const createUser=(formValues,signIn)=> async dispatch=>{
     const res = await server.post('/register',formValues);
+    console.log(res)
+
     dispatch({type:CREATE_USER,payload:res.data})
     if(res.data!=='eror'&&res.data!=='dup'){
         signIn(res.data._id);
-        openChat('allAroundTheWorld');
+       
 
     }
 
     }
-    export const loginUser=(formValues,signIn,openChat)=> async dispatch=>{
-        const res = await server.post('/login',formValues);
+    export const loginUser=(formValues,signIn)=> async dispatch=>{
+        const res = await server.post('/login',formValues);//,config can be add
+        console.log(res)
+
         dispatch({type:LOGIN,payload:res.data})
         if(res.data!=='eror'&&res.data!=='not found'&&res.data!=='not good'){
             signIn(res.data._id);
-            openChat('allAroundTheWorld');
+      
 
         }
 

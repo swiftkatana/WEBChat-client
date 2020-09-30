@@ -14,14 +14,18 @@ class ShowChatArea extends React.Component{
     }
 
     componentDidMount(){
+     
+    }   
+    renderChat=()=>{
+        if(!this.props.chatArea.openChat._id){
+            return(<h1>error please go back</h1>)
+        }
+        return<ChatWindow  ENDPOINT={ENDPOINT}  chat={this.props.chatArea.openChat}  user={this.props.user} />
     }
 
     render(){
-        return(
-            <div>
-                  <ChatWindow  ENDPOINT={ENDPOINT} chatId={this.props.chatArea.openChat.chatId}  user={this.props.user} />
-            </div>
-        )
+        return this.renderChat();
+                  
     }
 
     
@@ -31,7 +35,7 @@ class ShowChatArea extends React.Component{
 const mapStateToProps = (state) => ({
     chatArea:state.chatArea,
     user:state.user,
-    isLogin:state.auth.isSignedIn
+    isLogin:state.auth.isLogin
 })
 
 

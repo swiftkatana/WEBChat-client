@@ -6,8 +6,7 @@ export default (state='eng',action)=>{
 
 switch (action.type) {
     case CHANGE_LEGUAGE:
-        state=action.payload;
-        return state
+        return action.payload
 
     default:
         return state

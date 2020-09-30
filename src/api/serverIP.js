@@ -1,3 +1,3 @@
-export default 'http://84.108.78.137:1029'
+export default 'http://84.108.77.60:1029'
 // https://mycolors-il.com
 // http://84.108.78.137:1029
