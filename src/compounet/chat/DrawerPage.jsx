@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import {createCHAT,openChat,deleteChat,fetchChats,signOut,changeLeg } from '../../action'
 
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -19,9 +18,10 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import history from '../../history';
 import { Button } from '@material-ui/core';
+import history from '../../history';
 
+import {createCHAT,openChat,deleteChat,fetchChats,signOut,changeLeg } from '../../action'
 
 
 const drawerWidth = 240;
@@ -92,7 +92,51 @@ function DrawerPage (props){
         const classes = useStyles();
         const theme = useTheme();
         const [open, setOpen] = React.useState(true);
+        var container = document.querySelector("body");
 
+        container.addEventListener("touchstart", startTouch, false);
+        container.addEventListener("touchmove", moveTouch, false);
+      
+        // Swipe Up / Down / Left / Right
+        var initialX = null;
+        var initialY = null;
+      
+        function startTouch(e) {
+          initialX = e.touches[0].clientX;
+          initialY = e.touches[0].clientY;
+        };
+      
+        function moveTouch(e) {
+          if (initialX === null) {
+            return;
+          }
+      
+          if (initialY === null) {
+            return;
+          }
+      
+          var currentX = e.touches[0].clientX;
+          var currentY = e.touches[0].clientY;
+      
+          var diffX = initialX - currentX;
+          var diffY = initialY - currentY;
+      
+          if (Math.abs(diffX) > Math.abs(diffY)) {
+            // sliding horizontally
+            if (diffX > 0) {
+              // swiped left
+              handleDrawerClose()
+            } else {
+              // swiped right
+              handleDrawerOpen()
+            }  
+          }
+      
+          initialX = null;
+          initialY = null;
+      
+          e.preventDefault();
+        };
  
         const handleDrawerOpen = () => {
           setOpen(true);

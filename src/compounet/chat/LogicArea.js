@@ -1,19 +1,18 @@
 import React from 'react'
 import { Button, Modal } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import socketIOClient from 'socket.io-client' 
+
 
 import {add_Friend,updatefriend, deleteFriend} from '../../action'
 import myserver from '../../api/myserver';
-import out from '../../api/serverIP';
+import io from '../../io';
 
 
-const ENDPOINT =out;
 
 class LogicArea extends React.Component{
     
     state={
-        io:socketIOClient(ENDPOINT),
+        io:io,
         show:false,
         whatKind:'',
         body:'',

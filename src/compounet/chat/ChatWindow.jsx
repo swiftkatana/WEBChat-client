@@ -1,6 +1,6 @@
 import React from 'react'
-import socketIOClient from 'socket.io-client' 
 import { InputGroup, FormControl, Button } from 'react-bootstrap';
+import io from '../../io';
 
 function getTimeIn24Format() {
   var d = new Date();
@@ -15,8 +15,8 @@ function getDate(){
 // return {m:d.getMonth()+1,d:d.getDate(),y:d.getFullYear()}
   
 }
-var theirVideoTAg = document.querySelector("#theirVideoTAg");
-var myVideoTAg = document.querySelector("#myVideoTAg");
+var theirVideoArea = document.querySelector("#theirVideoTAg");
+var myVideoArea = document.querySelector("#myVideoTAg");
 
 var configuration = {
   'iceServers': [{
@@ -24,7 +24,6 @@ var configuration = {
   }]
 };
 var rtcPeerConn;
-//startStream();
 
 
 
@@ -37,7 +36,7 @@ class ChatWindow extends React.Component{
     super(props);
     this.state={
       meassge:'',
-      socket:socketIOClient(this.props.ENDPOINT),
+      socket:io,
       meassges:this.props.chat.meassges,
       whoIsTypeingNow:[],
       user:this.props.user,
@@ -53,26 +52,29 @@ class ChatWindow extends React.Component{
     }
     
     componentDidMount(){
-      this.scrollToBottom();
+
+    
+        this.scrollToBottom();
+ 
 
       this.state.socket.emit('ready',this.state.chatId);
       this.state.socket.on('announce'+this.state.chatId,(data)=>{
-        console.log(data)
+        this.addmessage(data)
       })
     
-     this.state.socket.emit('signal',{type:'create singling',message:'are you ready for a call?',room:this.state.chatId});
+     this.state.socket.emit('signal',{"type":"user_here", "message":"Are you ready for a call?", "room":this.state.chatId});
           this.state.socket.on('signaling_message'+this.state.chatId,(data)=>{
 
-            console.log(data.type);
-            if(!rtcPeerConn)this.startSignaling();
+            this.addmessage(data.type);
 
-            
-            if (data.type != "user_here") {
+            if(!rtcPeerConn)this.startSignaling()
+
+            if (data.type !=="user_here") {
               var message = JSON.parse(data.message);
               if (message.sdp) {
                 rtcPeerConn.setRemoteDescription(new RTCSessionDescription(message.sdp), function () {
                   // if we received an offer, we need to answer
-                  if (rtcPeerConn.remoteDescription.type == 'offer') {
+                  if (rtcPeerConn.remoteDescription.type === 'offer') {
                     rtcPeerConn.createAnswer(this.sendLocalDesc, this.logError);
                   }
                 }, this.logError);
@@ -81,12 +83,18 @@ class ChatWindow extends React.Component{
                 rtcPeerConn.addIceCandidate(new RTCIceCandidate(message.candidate));
               }
             }
+
+
+
           })
 
           this.state.socket.on('chat'+this.state.chatId,(data)=>{
+          if(data.senderId!==this.props.user.email) {
           this.scrollToBottom();
-          if(data.senderId!==this.props.user.email) this.state.audio.play();
+            this.state.audio.play();
+          }
               this.setState({meassges:[...this.state.meassges,data]})
+
           });
           
           this.state.socket.on('typeing'+this.state.chatId,(data)=>{
@@ -106,54 +114,59 @@ class ChatWindow extends React.Component{
 
       }
       componentDidUpdate() {
-        this.scrollToBottom();
       }
       startSignaling=()=>{
-        console.log('start signaling')
-        rtcPeerConn = new RTCPeerConnection(configuration);
-	
-				// send any ice candidates to the other peer
-				rtcPeerConn.onicecandidate = function (evt) {
-					if (evt.candidate)
-						this.state.socket.emit('signal',{"type":"ice candidate", "message": JSON.stringify({ 'candidate': evt.candidate }), "room":this.state.chatId});
-					console.log("completed that ice candidate...");
-				};
-				
-				// let the 'negotiationneeded' event trigger offer generation
-				rtcPeerConn.onnegotiationneeded = function () {
-					console.log("on negotiation called");
-					rtcPeerConn.createOffer(this.sendLocalDesc, this.logError);
-				}
-				
+          this.addmessage('start signaling')
+          rtcPeerConn = new RTCPeerConnection(configuration);
+
+          rtcPeerConn.onicecandidate =  (evt)=> {
+            if (evt.candidate)
+            this.state.socket.emit('signal',{"type":"ice candidate", "message": JSON.stringify({ 'candidate': evt.candidate }), "room":this.state.chatId});
+              this.addmessage("completed that ice candidate...");
+          };
+
+            // let the 'negotiationneeded' event trigger offer generation
+            rtcPeerConn.onnegotiationneeded =  ()=> {
+              this.addmessage("on negotiation called");
+              rtcPeerConn.createOffer(this.sendLocalDesc, this.logError);
+            }
+            	
 				// once remote stream arrives, show it in the remote video element
-				rtcPeerConn.onaddstream = function (evt) {
-					console.log("going to add their stream...");
-					theirVideoTAg.srcObject = (evt.stream);
-				};
-				
-				// get a local stream, show it in our video tag and add it to be sent
+				rtcPeerConn.onaddstream =  (evt) =>{
+					this.addmessage("going to add their stream...");
+					theirVideoArea.src = URL.createObjectURL(evt.stream);
+
+        };
+        
+        		// get a local stream, show it in our video tag and add it to be sent
 				navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 				navigator.getUserMedia({
-					'audio': false,
+					'audio': true,
 					'video': true
-				}, function (stream) {
-					console.log("going to display my stream...");
-				myVideoTAg.srcObject = (stream);
+				},  (stream) =>{
+					this.addmessage("going to display my stream...");
+          myVideoArea.src = URL.createObjectURL(stream);
+
 					rtcPeerConn.addStream(stream);
 				}, this.logError);
+
       }
        sendLocalDesc=(desc)=> {
-				rtcPeerConn.setLocalDescription(desc, function () {
-					console.log("sending local description");
+				rtcPeerConn.setLocalDescription(desc,  ()=> {
+					this.addmessage("sending local description");
 					this.state.socket.emit('signal',{"type":"SDP", "message": JSON.stringify({ 'sdp': rtcPeerConn.localDescription }), "room":this.state.chatId});
 				}, this.logError);
+      }
+      
+      logError=(error) =>{
+				this.addmessage(error.name + ': ' + error.message);
 			}
-			
-			 logError=(error)=>{
-				console.log(error.name + ': ' + error.message);
-			}
+
+
+
+
       addmessage=(message)=>{
-        alert(message);
+        console.log(message)
       }
       onChangeText=(e)=>{
         this.setState({meassge:e.currentTarget.value});

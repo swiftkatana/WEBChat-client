@@ -108,15 +108,20 @@ const config = {
 
     }
     export const loginUser=(formValues,signIn)=> async dispatch=>{
-        const res = await server.post('/login',formValues);//,config can be add
-        console.log(res)
+      await server.post('/login',formValues).then(res=>{
 
-        dispatch({type:LOGIN,payload:res.data})
-        if(res.data!=='eror'&&res.data!=='not found'&&res.data!=='not good'){
-            signIn(res.data._id);
-      
 
-        }
+          dispatch({type:LOGIN,payload:res.data})
+          if(res.data!=='eror'&&res.data!=='not found'&&res.data!=='not good'){
+              signIn(res.data._id);
+              
+              
+          }
+      }).catch(err=>{
+          console.log(err)
+      })
+
+
 
 
     }

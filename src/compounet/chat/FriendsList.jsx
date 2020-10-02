@@ -4,7 +4,8 @@ import { Avatar, Grid, Button, Tooltip } from '@material-ui/core';
 import { Col, ListGroup, Row, Container } from 'react-bootstrap'
 import ChatIcon from '@material-ui/icons/Chat';
 import {Delete,Block} from '@material-ui/icons';
-import socketIOClient from 'socket.io-client' 
+import io from '../../io';
+
 
 import serverIp from '../../api/serverIP';
 import {updatefriend,openChat} from '../../action'
@@ -13,7 +14,7 @@ import myserver from '../../api/myserver';
 class FriendsList extends React.Component{
 
     state={
-        socket:socketIOClient(serverIp)
+        socket:io
     }
     componentDidUpdate(){
         console.log('update ')
