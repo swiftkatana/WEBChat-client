@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import history from '../../history';
+import { changeURL } from '../../history';
 
 
 class Profile extends React.Component{
     componentDidMount(){
-        if(!this.props.user||!this.props.isLogin) history.push('/');
+        if(!this.props.user||!this.props.isLogin) changeURL('/');
     }
     renderName=()=>{
         if(!this.props.user||!this.props.isLogin)  return null

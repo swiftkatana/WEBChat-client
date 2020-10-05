@@ -16,6 +16,7 @@ class ShowChatArea extends React.Component{
     }   
     renderChat=()=>{
         if(!this.props.chatArea.openChat._id){
+            
             return(<h1>error please go back</h1>)
         }
         return<ChatWindow  ENDPOINT={ENDPOINT}  chat={this.props.chatArea.openChat}  user={this.props.user} />

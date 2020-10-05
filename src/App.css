@@ -153,10 +153,7 @@ input{
 }
 
 /* video class */
-#theirVideoTAg{
+#videosCon{
     position: absolute;
-}
-#myVideoTag{
-    position: absolute;
-    width: 10%;
+    z-index: 22;
 }

@@ -26,7 +26,7 @@ const Leg={
             leabel:'Email'
         },
         password:{
-            error:'Your password must include at least 8 characters. At least 1 number And symbol (like !@#%).  ',
+            error:'Your password must include at least 8 characters. At least 1 number And upper case  (like AWDS).  ',
             leabel:'Password'
         },
         firstName:{

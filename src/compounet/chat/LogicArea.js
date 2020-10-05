@@ -12,7 +12,6 @@ import io from '../../io';
 class LogicArea extends React.Component{
     
     state={
-        io:io,
         show:false,
         whatKind:'',
         body:'',
@@ -28,58 +27,64 @@ class LogicArea extends React.Component{
         }
         setListenerSocket=()=>{
             if(!this.state.id&&this.props.isLogin&&this.props.user){
-                this.state.io.on('newFriendReq'+this.props.user._id,myNewFriend=>{
-                    console.log('friend')
-                    if(myNewFriend.status==='sender') {
-                        this.state.newReqSound.play();
-                    
-                        this.setState({lastFriendReq:myNewFriend,show:true,whatKind:'newFriendreq',body:myNewFriend.firstName+" " +myNewFriend.lastName});
-                    }
-                    this.props.add_Friend(myNewFriend)
-                
-                
-                });
-    
+            
                 //my friend req have been accept
-                this.state.io.on('FirendsReqAccept'+this.props.user._id,(sender)=>{
-                    if(sender.status==='accept') {
-                        this.state.newReqSound.play();
+                io.on('connect',()=>{
+                    console.log('connect to socket');
+
+                        io.on('newFriendReq'+this.props.user._id,myNewFriend=>{
+                        console.log('friend')
+                        if(myNewFriend.status==='sender') {
+                            this.state.newReqSound.play();
+                        
+                            this.setState({lastFriendReq:myNewFriend,show:true,whatKind:'newFriendreq',body:myNewFriend.firstName+" " +myNewFriend.lastName});
+                        }
+                        this.props.add_Friend(myNewFriend)
                     
-                        this.setState({lastFriendReq:sender,show:true,whatKind:'newFriendreq',body:sender.firstName+" " +sender.lastName});
-                    }
-                    console.log('accept')
-                    this.props.updatefriend({_id:sender._id,status:'accept',chatId:sender.chatId,user:sender});
-                
+                    
+                    });
+
+                        io.on('FirendsReqAccept'+this.props.user._id,(sender)=>{
+                        if(sender.status==='accept') {
+                            this.state.newReqSound.play();
+                        
+                            this.setState({lastFriendReq:sender,show:true,whatKind:'newFriendreq',body:sender.firstName+" " +sender.lastName});
+                        }
+                        console.log('accept')
+                        this.props.updatefriend({_id:sender._id,status:'accept',chatId:sender.chatId,user:sender});
+                    
+                    });
+                        io.on('deleteFriend'+this.props.user._id,sender=>{
+                        console.log('delete')
+                        this.props.deleteFriend(sender);
+        
+                    });
+                        io.on('declineFriendReq'+this.props.user._id,(sender)=>{
+                        console.log('decline');
+                        this.props.deleteFriend(sender);
+                    });
+                        io.on('blockFriendReq'+this.props.user._id,(sender)=>{
+                        console.log('block')
+                        this.props.updatefriend({_id:sender._id,user:sender,status:'decline'});
+                    
+                    });
+                        io.on('error'+this.props.user._id,data=>{
+                     console.log(data)
+                        this.setState({show:true,whatKind:'error',header:'error',body:data});
+        
+                    });
+                        io.on('show',data=>{
+                        alert(data)
+                    });
                 });
-                this.state.io.on('deleteFriend'+this.props.user._id,sender=>{
-                    console.log('delete')
-                    this.props.deleteFriend(sender);
-    
-                });
-                this.state.io.on('declineFriendReq'+this.props.user._id,(sender)=>{
-                    console.log('decline');
-                    this.props.deleteFriend(sender);
-                });
-                this.state.io.on('blockFriendReq'+this.props.user._id,(sender)=>{
-                    console.log('block')
-                    this.props.updatefriend({_id:sender._id,user:sender,status:'decline'});
-                
-                });
-                this.state.io.on('error'+this.props.user._id,data=>{
-                 console.log(data)
-                    this.setState({show:true,whatKind:'error',header:'error',body:data});
-    
-                });
-                this.state.io.on('show',data=>{
-                    alert(data)
-                });
+             
                 this.setState({id:this.props.user._id});
 
             }
            else if(this.state.id&&!this.props.isLogin&&!this.props.user){
-               console.log('off')
-            this.state.io.disconnect();
-
+                console.log('off')
+                io.disconnect();
+                this.setState({id:''});
     
             }
           

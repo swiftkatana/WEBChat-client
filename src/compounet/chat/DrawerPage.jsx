@@ -19,9 +19,10 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Button } from '@material-ui/core';
-import history from '../../history';
+
 
 import {createCHAT,openChat,deleteChat,fetchChats,signOut,changeLeg } from '../../action'
+import history, { changeURL } from '../../history';
 
 
 const drawerWidth = 240;
@@ -153,18 +154,18 @@ function DrawerPage (props){
         }
  
         const renderLogOutAndProfile=()=>{
-          if(!props.isLogin) return( <ListItem onClick={()=>{history.push('/'); props.signOut()}} button key={'login buuton'}>
+          if(!props.isLogin) return( <ListItem onClick={()=>{changeURL('/'); props.signOut()}} button key={'login buuton'}>
           <ListItemIcon><img  className="fa fa-plus-circle" src='login.png' alt='login button' /> </ListItemIcon>  
            <ListItemText primary={'Login \\ register'} />
            </ListItem>)
 
          return ( <React.Fragment>
 
-          <ListItem onClick={()=>history.push('/profile')} button key={'profile buuton'}>
+          <ListItem onClick={()=>changeURL('/profile')} button key={'profile buuton'}>
           <ListItemIcon><img  className="fa fa-plus-circle" src={props.user.imageProfile} alt='profile button' /> </ListItemIcon>  
            <ListItemText primary={props.user.firstName} />
            </ListItem>
-         <ListItem onClick={()=>{history.push('/'); props.signOut()}} button key={'LogOut buuton'}>
+         <ListItem onClick={()=>{changeURL('/'); props.signOut()}} button key={'LogOut buuton'}>
             <ListItemIcon><img  className="fa fa-plus-circle" src='logOut.png' alt='logOut button' /> </ListItemIcon>  
             <ListItemText primary={'LogOut'} />
        </ListItem>
@@ -173,11 +174,11 @@ function DrawerPage (props){
         const AddFrindButtonAndFriendList=()=>{
           if(!props.isLogin||!props.user) return null
           return  (<>
-             <ListItem onClick={()=>history.push('addFrind')} button key={'addFrind'}>
+             <ListItem onClick={()=>changeURL('addFrind')} button key={'addFrind'}>
               <ListItemIcon><img  className="fa fa-plus-circle" src='serachF.png' alt='addFrind button' /> </ListItemIcon>  
               <ListItemText primary={'Serach A Frined'} />
            </ListItem>
-           <ListItem onClick={()=>history.push('friends.list')} button key={'friends.list'}>
+           <ListItem onClick={()=>changeURL('friends.list')} button key={'friends.list'}>
               <ListItemIcon><img  className="fa fa-plus-circle" src='friendsList.png' alt='friends.list button' /> </ListItemIcon>  
               <ListItemText primary={'friends list'} />
            </ListItem>
@@ -246,7 +247,7 @@ function DrawerPage (props){
               </div>
               <Button variant="contained"  id='CWE' onClick={()=>{
                 if(history.location.pathname==='/') return null
-                history.push('')
+                changeURL('')
               }}>
                   CWE
                 </Button>

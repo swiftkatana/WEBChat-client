@@ -1,8 +1,10 @@
 /* eslint-disable no-useless-escape */
-import history from '../history';
+import { changeURL } from '../history';
 
 import server from '../api/myserver';
 import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,DELETE_CHAT,WHAT_SYSTEM, OPEN_CHAT,UPDATE_STATUS_FRIEND,NEW_FRIEND, CHANGE_LEGUAGE,DELETE_FRIEND}  from './types';
+
+
 
 
 // eslint-disable-next-line no-unused-vars
@@ -20,7 +22,7 @@ const config = {
             payload:data
         })
 
-        history.push('/chat');
+        changeURL('/chat')
 
     }
 
@@ -93,7 +95,7 @@ const config = {
     export const deleteChat = rendId =>  dispatch =>{
         server.delete(`/chat/delete/${rendId}`);
         dispatch({type:DELETE_CHAT,payload:rendId});
-    setTimeout(()=>{history.push("/")},40) ;
+    setTimeout(()=>{changeURL("/")},40) ;
     }
     export const createUser=(formValues,signIn)=> async dispatch=>{
     const res = await server.post('/register',formValues);
@@ -119,7 +121,7 @@ const config = {
           }
       }).catch(err=>{
           console.log(err)
-      })
+      });
 
 
 

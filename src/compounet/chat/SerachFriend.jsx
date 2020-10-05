@@ -4,7 +4,7 @@ import { FormControl, InputGroup, Container, ListGroup, Col, Row } from 'react-b
 
 import {add_Friend} from '../../action'
 import myserver from '../../api/myserver';
-import history from '../../history';
+import { changeURL } from '../../history';
 import { Avatar } from '@material-ui/core';
 
 class SerachFriend extends React.Component{
@@ -19,7 +19,7 @@ class SerachFriend extends React.Component{
 
 
     componentDidMount(){
-        if(!this.props.user||!this.props.isLogin) history.push('/');
+        if(!this.props.user||!this.props.isLogin) changeURL('/');
         this.getAllUsers();
 
     }
