@@ -1,3 +1,12 @@
+# WEBChat-client
+
+## i'm trying to create a web chat. its will be kind of mix of WhatsApp and Discord 
+## its a big project and i'm open for ideas
+### here its only the frontend the backend is on different repositorie
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
