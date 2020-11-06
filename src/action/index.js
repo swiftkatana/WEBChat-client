@@ -3,6 +3,7 @@ import { changeURL } from '../history';
 
 import server from '../api/myserver';
 import {SIGN_IN,SIGN_OUT, CREATE_USER, LOGIN,CREATE_CHAT,FETCH_CHAT,FETCH_CHATS,DELETE_CHAT,WHAT_SYSTEM, OPEN_CHAT,UPDATE_STATUS_FRIEND,NEW_FRIEND, CHANGE_LEGUAGE,DELETE_FRIEND}  from './types';
+import io from '../io';
 
 
 
@@ -16,7 +17,6 @@ const config = {
   }
     export const openChat =(chatId)=>async (dispatch)=>{
         const {data} = await server.post('/api/chat/getChat',{chatId})
-        console.log(data)
         dispatch({
             type:OPEN_CHAT,
             payload:data
@@ -58,7 +58,6 @@ const config = {
 
     export const fetchChats =(whatToTake)=> async dispatch =>{
         const res = await server.get('/api/user/CHATs'+whatToTake);
-        console.log(res)
         dispatch({
             type:FETCH_CHATS,
             payload:res.data
@@ -68,7 +67,6 @@ const config = {
 
     export const fetchChat =(CHATId)=> async dispatch =>{
         const res = await server.get(`/api/user/CHAT${CHATId}`);
-        console.log(res)
 
         dispatch({
             type:FETCH_CHAT,
@@ -99,7 +97,6 @@ const config = {
     }
     export const createUser=(formValues,signIn)=> async dispatch=>{
     const res = await server.post('/register',formValues);
-    console.log(res)
 
     dispatch({type:CREATE_USER,payload:res.data})
     if(res.data!=='eror'&&res.data!=='dup'){
@@ -111,14 +108,13 @@ const config = {
     }
     export const loginUser=(formValues,signIn)=> async dispatch=>{
       await server.post('/login',formValues).then(res=>{
-
-
+        io.emit('loginToTheWebSite',formValues.email);
+    
+        
           dispatch({type:LOGIN,payload:res.data})
-          if(res.data!=='eror'&&res.data!=='not found'&&res.data!=='not good'){
-              signIn(res.data._id);
-              
-              
-          }
+
+          if(!res.data.err) signIn(res.data._id);
+          
       }).catch(err=>{
           console.log(err)
       });

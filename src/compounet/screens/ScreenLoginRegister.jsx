@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Field,reduxForm} from 'redux-form'
 
-import {signIn,signOut,createUser,loginUser,openChat,changeLeg} from '../action'
+import {signIn,signOut,createUser,loginUser,openChat,changeLeg} from '../../action'
 import { Container } from 'react-bootstrap';
 import { Fab } from '@material-ui/core';
 // import server from '../api/myserver';
@@ -11,13 +11,19 @@ import { Fab } from '@material-ui/core';
 
 const Leg={
     eng:{
+        errorLogin:{
+            InfoWrong:'Email or password not valid please try agian',
+            userNotCreate:'User does not exist ',
+            alreadyLogin:'User is already login'
+
+        },
         login:{
-            buttonForLogin:'Press For Login'
+            buttonForLogin:' Login'
             ,leabel:'Login',
             button:'Login'
         },
         register:{
-            buttonForRegister:'Press For Sign up'
+            buttonForRegister:' Sign up'
             ,leabel:'Sign up',
             button:'Register'
         },
@@ -43,17 +49,22 @@ const Leg={
         },
         phone:{
             error:'Need to enter phone number',
-            leabel:'phone number'
+            leabel:'Phone number'
         }
     },
     heb:{
+        errorLogin:{
+            InfoWrong:'אימייל או הסיסמה לא נכונים',
+            userNotCreate:'המשתמש לא קיים ',
+            alreadyLogin:'המשתמש כבר מחובר בבקשה תבדוק אם יש לך חלונית נוספת '
+        },
         login:{
-            buttonForLogin:'לחץ כאן להתחבר'
+            buttonForLogin:' להתחבר'
             ,leabel:'להתחבר לאתר',
             button:'להתחבר'
         },
         register:{
-            buttonForRegister:'לחץ כאן להרשם'
+            buttonForRegister:' להרשם'
             ,leabel:'הרשמה לאתר',
             button:'להירשם'
         },
@@ -169,12 +180,13 @@ class Login extends React.Component{
 
    
     renderErrorLogin(){
-
         if(this.props.user){
-            if(this.props.user==='not found'){
-                
-                return<p className='emaildup'>אימייל או הסיסמה לא נכונים</p>
-            }}
+            if(this.props.user.err){
+                return<p className='emaildup alert alert-danger'>{Leg[this.props.leg].errorLogin[this.props.user.err]}</p>
+
+            }
+
+        }
 
     }
 
