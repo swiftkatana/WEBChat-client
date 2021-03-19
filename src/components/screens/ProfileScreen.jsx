@@ -1,30 +1,23 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { changeURL } from '../../history';
 
+const Profile = ({ user }) => {
 
-class Profile extends React.Component{
-    componentDidMount(){
-        if(!this.props.user||!this.props.isLogin) changeURL('/');
-    }
-    renderName=()=>{
-        if(!this.props.user||!this.props.isLogin)  return null
+    const renderName = () => {
+        if (!user) return null
 
-        return this.props.user.firstName
+        return user.firstName
     }
-    render() {
-        return (
-            <div>
-               <h1>Hello {this.renderName()} </h1> 
-            </div>
-        );
-    }
+    return (
+        <div>
+            <h1>Hello {renderName()} </h1>
+        </div>
+    );
 
 }
-const mapStateToProps = (state) => ({
-isLogin:state.auth.isLogin,
-user:state.user,    
+const mapStateToProps = ({ user }) => ({
+    user,
 })
 
 
-export default connect(mapStateToProps,{})(Profile);
+export default connect(mapStateToProps, {})(Profile);

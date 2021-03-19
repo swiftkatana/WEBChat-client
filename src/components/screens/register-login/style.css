@@ -1,0 +1,38 @@
+.containerLogin {
+  width: 100%;
+  height: 100%;
+  margin: 5px;
+  text-align: center;
+}
+.carousel-control-prev-icon {
+  color: black;
+}
+#changeModeRL {
+  margin-top: 10%;
+}
+.L-R-Leabel {
+  animation-name: labelShow;
+  animation-duration: 0.5s;
+}
+.containerRegisterLogin {
+  margin: 5px;
+  padding: 5px;
+  width: 80%;
+  height: 80%;
+}
+
+@keyframes labelShow {
+  0% {
+    position: relative;
+    top: -100px;
+    opacity: 0;
+    left: -100px;
+  }
+
+  100% {
+    position: relative;
+    top: 0px;
+    opacity: 0.2;
+    left: 0px;
+  }
+}

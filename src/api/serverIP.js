@@ -1,5 +1,6 @@
+import { productionIp, state } from "../config/state";
+
 /* eslint-disable no-unused-vars */
-const outip = "https://hidden-sea-04996.herokuapp.com"
-const inMyServer = 'http://84.108.77.60:1029'
-const ip = inMyServer;
-export default ip;
+const inMyServer = "http://84.108.76.83:1029";
+const ip = state === 'dev' ? inMyServer : productionIp;
+export default ip

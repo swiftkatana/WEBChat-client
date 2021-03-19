@@ -1,0 +1,112 @@
+#mainPage {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  font-family: "Courier New", Courier, monospace;
+}
+
+#userArea {
+  background-color: #aaa;
+}
+
+#handle {
+  text-align: center;
+  text-transform: capitalize;
+  font-family: "Arial";
+  text-shadow: 0px 0px #555;
+}
+#videosCon {
+  position: absolute;
+  z-index: 22;
+}
+
+#oncall {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 30em;
+  height: 18em;
+  margin-top: -9em; /*set to a negative number 1/2 of your height*/
+  margin-left: -15em; /*set to a negative number 1/2 of your width*/
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+}
+
+.error {
+  color: red;
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  font-weight: bolder;
+  font-size: small;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  letter-spacing: 1px;
+  transform: translate3d(0, 0, 0);
+}
+
+.modal-dialog {
+  z-index: 11111;
+}
+
+.imgLeg {
+  height: 2rem;
+  width: 2rem;
+  cursor: pointer;
+  margin: 0 10px;
+}
+.imageAddFri:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;
+}
+
+.textLeft {
+  text-align: left;
+}
+.textRight {
+  text-align: right;
+}
+
+#CWE {
+  background-color: #e5ebee50;
+}
+
+button:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+h2 {
+  font-size: 18px;
+  padding: 10px 20px;
+  color: #575ed8;
+}
+label {
+  padding: 10px 20px;
+}
+
+@keyframes CardTextShow {
+  0% {
+    position: relative;
+    top: -100px;
+    opacity: 0;
+    left: -100px;
+  }
+
+  100% {
+    position: relative;
+    top: 0px;
+    opacity: 0.2;
+    left: 0px;
+  }
+}
+@keyframes errorTextShow {
+  0% {
+    opacity: 0;
+    font-size: x-large;
+  }
+
+  100% {
+    opacity: 1;
+    font-size: small;
+  }
+}

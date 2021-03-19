@@ -1,130 +1,186 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { FormControl, InputGroup, Container, ListGroup, Col, Row } from 'react-bootstrap';
+import React from "react";
+import { connect } from "react-redux";
+import {
+  FormControl,
+  InputGroup,
+  Container,
+  ListGroup,
+  Col,
+  Row,
+} from "react-bootstrap";
 
-import {add_Friend} from '../../action'
-import myserver from '../../api/myserver';
-import { changeURL } from '../../history';
-import { Avatar } from '@material-ui/core';
+import { add_Friend } from "../../action";
+import myserver from "../../api/myserver";
+import { Avatar, LinearProgress } from "@material-ui/core";
+import { queryUsers, sendFriendRequestUrl } from "../../api/apiKeys";
 
-class SerachFriend extends React.Component{
+class SerachFriend extends React.Component {
+  state = {
+    users: [],
+    query: "",
+    idForTheClock: "",
+    serachDone: false,
+    loading: false,
+  };
 
-    state={
-        users:[],
-        filterUsers:[],
-        query:'',
-        idForTheClock:'',
-
-    }
-
-
-    componentDidMount(){
-        if(!this.props.user||!this.props.isLogin) changeURL('/');
-        this.getAllUsers();
-
-    }
- 
-    
-    getAllUsers= async()=>{
-        if(!this.props.user||!this.props.isLogin) return null
-        const res = await myserver.post('/api/user/getUserForSerach',{sender:this.props.user});
-        console.log(res)
-
-        this.setState({users:res.data});
+  componentDidUpdate() {
+    if (!this.state.query && this.state.loading) {
+      this.setState({ loading: false })
 
     }
+  }
 
-    onClickSendReq=(geter)=>{
-       
-        myserver.post('/api/user/addnewfriend',{geter,sender:this.props.user})
-         
-    }
-    filterUsersForSerach=(user)=>{
-        let IsUserIsGood=true;
-        if(!new RegExp('^' + this.state.query).test(user.email)) IsUserIsGood=false;
-        if(this.props.user._id===user._id) IsUserIsGood=false;
-        if(this.props.user.friends[user._id])IsUserIsGood=false;
-        return IsUserIsGood;
 
-    }
 
-    cancelOrStartTheClock=()=>{
-        if(this.state.idForTheClock){
-            console.log('clear')
-           clearTimeout(this.state.idForTheClock);
-           this.setState({idForTheClock:''});
-           
-        }
-            const time = setTimeout(()=>{
-                const filter = this.state.users.filter(user=>this.filterUsersForSerach(user));
-                this.setState({filterUsers:filter});
-            console.log('start')
+  getAllUsers = async () => {
+    try {
+      if (!this.props.user || !this.state.query) return null;
 
-            },200)
-            this.setState({idForTheClock:time});
-        
+      const res = await myserver.get(queryUsers(this.props.user._id, this.state.query));
+      if (res.data.error) {
+
+      } else
+        this.setState({ users: res.data.users || [], serachDone: true, loading: false });
+    } catch (error) {
+      console.log(error)
     }
 
+  };
 
-    onChangText=(e)=>{
-        this.setState({query: e.target.value});
-        this.cancelOrStartTheClock();
-    }
-     renderUsersList=()=>{
-        if(!this.state.filterUsers) return null
-        return this.state.filterUsers.map((user) => (
-            <ListGroup.Item key={user._id} className='row'>
-            <Row>
+  onClickSendReq = async (user1) => {
+    try {
+      const res = await myserver.post(sendFriendRequestUrl, { user1, user2: this.props.user });
+      let error = res.data.error;
+      let user = res.data.user;
+      if (error) {
+        console.log(error)
+      } else {
+        // what we do with the user we get
+        this.props.add_Friend(user);
+        console.log(user)
 
-            <Col xs='4'>
-            <Avatar alt='profile'  src={user.imageProfile} style={{ fontSize: 30 }}   />
-       
-
-            </Col>
-            <Col xs='7'>
-            <p>{`${user.firstName} ${user.email}`}</p>
-
-            </Col>
-            <Col xs='1'>
-              <Avatar className='imgLeg imageAddFri' onClick={()=>this.onClickSendReq(user)} alt='add button'  src='addFriend.png' style={{ fontSize: 30 }}  />
-            </Col>
-            </Row>
-            </ListGroup.Item>
-
-    
-        ))
       }
+    } catch (error) {
+      console.log(error)
+      alert(error.message);
+    }
+  };
 
 
- 
 
-    render(){
-            return(
-                <Container>
-             
-                   <InputGroup className="mb-2 mr-sm-2">
-                      
-                        <FormControl  value={this.state.query} onChange={this.onChangText}  id="inlineFormInputGroupUsername2" placeholder="email" />
-                        <InputGroup.Prepend>
-                        <InputGroup.Text>@</InputGroup.Text>
-                        </InputGroup.Prepend>
-                    </InputGroup>
-                    <ListGroup>
+  cancelOrStartTheClock = () => {
+    if (this.state.idForTheClock) {
+      clearTimeout(this.state.idForTheClock);
+      this.setState({ idForTheClock: "" });
+    }
+    const time = setTimeout(() => {
+      this.setState({ loading: true });
+      this.getAllUsers();
+    }, 500);
+    this.setState({ idForTheClock: time });
+  };
 
-                    {this.renderUsersList()}
-                    </ListGroup>
-                </Container>
-            )
+  onChangText = (e) => {
+    if (!e.target.value)
+      this.setState({
+        users: [],
+        query: "",
+        idForTheClock: "",
+        serachDone: true,
+        loading: false,
+      });
+    else {
+      this.setState({ query: e.target.value, serachDone: false });
+      this.cancelOrStartTheClock();
+
     }
 
 
+  };
 
+  renderUsers = () => {
+    return this.state.users.map((user) => (
+      <ListGroup.Item key={user.email} className="row">
+        <Row>
+          <Col xs="4">
+            <Avatar
+              alt="profile"
+              src={user.imageProfile}
+              style={{ fontSize: 30 }}
+            />
+          </Col>
+          <Col xs="7">
+            <p>{`${user.firstName} ${user.email}`}</p>
+          </Col>
+          <Col xs="1">
+            <Avatar
+              className="imgLeg imageAddFri"
+              onClick={() => this.onClickSendReq(user)}
+              alt="add button"
+              src="addFriend.png"
+              style={{ fontSize: 30 }}
+            />
+          </Col>
+        </Row>
+      </ListGroup.Item>
+    ));
+  }
+
+  renderList = () => {
+    if (this.state.loading)
+      return (
+        <Row className="container-fluid">
+          <Col xs={12} md={12}>
+            <LinearProgress color="secondary" />
+          </Col>
+        </Row>
+
+      )
+
+    if (!this.state.query)
+      return (
+        <h1> look for a new friend </h1>
+      )
+
+
+    if (this.state.users.length === 0 && this.state.serachDone)
+      return (
+        <Row>
+          <Col xs="4">
+            <h1> users not found</h1>
+          </Col>
+        </Row>
+      );
+
+
+    return this.renderUsers()
+
+
+
+  };
+
+  render() {
+    return (
+      <Container>
+        <InputGroup className="mb-2 mr-sm-2">
+          <FormControl
+            value={this.state.query}
+            onChange={this.onChangText}
+            id="inlineFormInputGroupUsername2"
+            placeholder="email"
+          />
+          <InputGroup.Prepend>
+            <InputGroup.Text>@</InputGroup.Text>
+          </InputGroup.Prepend>
+        </InputGroup>
+        <ListGroup>{this.renderList()}</ListGroup>
+      </Container>
+    );
+  }
 }
 
-const mapStateToProps = (state) => ({
-    user:state.user
-    ,isLogin:state.auth.isLogin
-})
+const mapStateToProps = ({ user }) => ({
+  user
+});
 
-
-export default connect(mapStateToProps,{add_Friend}) (SerachFriend);
+export default connect(mapStateToProps, { add_Friend })(SerachFriend);

@@ -3,12 +3,10 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
 import reduxThunk from "redux-thunk";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import reducers from "./reducers";
-import "./App.css";
 // eslint-disable-next-line
 const composeEnhancers =
   (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ &&
