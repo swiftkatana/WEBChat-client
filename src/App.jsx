@@ -44,6 +44,14 @@ const App = ({ user, fetchChats, language, friends }) => {
     <DrawerPage >
       <LogicArea />
       <HashRouter >
+        {/* <Route path='/' component={Header} /> */}
+        {routes.map((route, index) =>
+          route.public ? (
+            <Route {...route} key={index} />
+          ) : (
+            <PrivateRoute {...route} key={index} />
+          )
+        )}
         <Route path="/profile" exact component={Profile} />
         <Route path="/addFrind" exact component={SerachFriendScreen} />
         <Route path="/chat:" exact component={ChatScreen} />

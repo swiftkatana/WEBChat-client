@@ -4,11 +4,18 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 // eslint-disable-next-line
+import theme from './theme'
+import store from './redux'
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </Provider>
+  </React.StrictMode>
+  ,
   document.getElementById("root")
 );
 
