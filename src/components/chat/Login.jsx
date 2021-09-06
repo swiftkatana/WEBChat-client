@@ -16,7 +16,7 @@ function Login({ language, signIn }) {
   const [isLoading, setLoading] = useState(false)
 
   let texts = language.texts.loginRegisterScreen
-
+  let errors = language.texts.errors
   const handlerSubmit = async e => {
     try {
       setLoading(true);
@@ -29,6 +29,7 @@ function Login({ language, signIn }) {
       if (res.data.user) {
         io.emit('loginToTheWebSite', res.data.user.email)
         signIn(res.data.user)
+
       }
 
 
@@ -43,7 +44,7 @@ function Login({ language, signIn }) {
 
     if (!error)
       return null
-    let errorText = texts.errorLogin[error] || error
+    let errorText = errors[error] || error
     return (
       <Form.Text className=" error">
         {errorText}

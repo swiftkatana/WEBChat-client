@@ -16,6 +16,7 @@ function Register({ signIn, language }) {
   const [hidePassword, setHidePassword] = useState(true)
 
   const texts = language.texts.loginRegisterScreen
+  let errors = language.texts.errors
 
   const handlerPasswordChange = (e) => {
     if (error) {
@@ -70,14 +71,18 @@ function Register({ signIn, language }) {
   }
 
   const renderErrorMessage = () => {
-    return error ? (
+
+    if (!error)
+      return null
+    let errorText = errors[error] || error
+    return (
       <Form.Text className=" error">
-        {error}
+        {errorText}
       </Form.Text>
-    ) : null
+    )
+
 
   }
-
   const renderFullName = () => {
     if (language.langNow === 'English')
       return (

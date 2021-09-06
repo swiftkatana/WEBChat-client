@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Route, HashRouter } from "react-router-dom";
 
-import SerachFriend from "./components/screens/ScreenSerachFriend";
 import DrawerPage from "./components/screens/DrawerPage";
+import SerachFriendScreen from "./components/screens/SerachFriendScreen";
 import LogicArea from "./components/LogicArea";
 import Profile from "./components/screens/ProfileScreen";
 import FriendsList from "./components/screens/FriendsListScreen";
@@ -14,13 +14,29 @@ import { fetchChats } from "./action";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/App.css";
 import { changeURL } from "./history";
+import { getMyFriendsUrl } from "./api/apiKeys";
+import myserver from "./api/myserver";
 
 
-const App = ({ user, fetchChats, language }) => {
+const App = ({ user, fetchChats, language, friends }) => {
   useEffect(() => {
     if (!user)
       changeURL("/")
-  }, [user]);
+    if (user && !friends) {
+      (async () => {
+        try {
+          let friends = await myserver.get(getMyFriendsUrl(user._id))
+          console.log(friends)
+
+        } catch (error) {
+          console.error(error)
+        }
+
+
+      })()
+    }
+
+  }, [user, friends]);
 
 
 
@@ -29,7 +45,7 @@ const App = ({ user, fetchChats, language }) => {
       <LogicArea />
       <HashRouter >
         <Route path="/profile" exact component={Profile} />
-        <Route path="/addFrind" exact component={SerachFriend} />
+        <Route path="/addFrind" exact component={SerachFriendScreen} />
         <Route path="/chat:" exact component={ChatScreen} />
         <Route path="/friends.list" exact component={FriendsList} />
         <Route path="/" exact component={LobyPageScreen} />
@@ -37,9 +53,10 @@ const App = ({ user, fetchChats, language }) => {
     </DrawerPage>
   );
 };
-const mapStateToProps = ({ user, language }) => ({
+const mapStateToProps = ({ user, language, friends }) => ({
   user,
   language,
+  friends,
 
 });
 

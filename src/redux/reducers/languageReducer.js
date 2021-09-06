@@ -1,6 +1,15 @@
 import { CHANGE_LEGUAGE } from "../action/types";
 const INS = {
     English: {
+        errors: {
+            searchUsersForFriend: 'didnt find people with this serach ',
+            loginFaildAlreadyConnect: 'The user is already logged in. Please check if you have another Tab run  ',
+            infoInvalid: "Email or password not valid please try agian",
+            usersNotFound: "User does not exist ",
+            UserIsAlreadyCreated: "User is already exist",
+            DBError: "data base error please try agian later",
+            "Network Error": 'we have Network Error please try agian in a few minutes'
+        },
         navBtn: {
             signIn: 'SignIn',
             signOut: 'SignOut',
@@ -9,14 +18,6 @@ const INS = {
         },
         loginRegisterScreen: {
 
-            errorLogin: {
-                loginFaildAlreadyConnect: 'The user is already logged in. Please check if you have another Tab run  ',
-                infoInvalid: "Email or password not valid please try agian",
-                usersNotFound: "User does not exist ",
-                UserIsAlreadyCreated: "User is already exist",
-                DBError: "data base error please try agian later",
-                "Network Error": 'we have Network Error please try agian in a few minutes'
-            },
             login: {
                 buttonForLogin: "Sgin in",
                 leabel: "Sgin in",
@@ -57,23 +58,29 @@ const INS = {
                 error: "Need to enter phone number",
                 leabel: "Phone number",
             },
+        },
+        SerachFriendScreen: {
+            startLookin: 'look for a new friend '
         }
+
     },
     Hebrew: {
+        errors: {
+            searchUsersForFriend: 'לא נימצא אנשים',
+            infoInvalid: "אימייל או הסיסמה לא נכונים",
+            usersNotFound: "המשתמש לא קיים ",
+            UserIsAlreadyCreated: "המשתמש כבר קיים",
+            loginFaildAlreadyConnect: "המשתמש כבר מחובר בבקשה תבדוק אם יש לך חלונית נוספת ",
+            DBError: "יש בעיה בשרת בבקשה תנסה שוב עוד כמה דקות ואם זה ממשיך בבקשה תגיד לנו",
+            "Network Error": 'יש לנו שגיאת רשת אנא נסה שוב בעוד מספר דקות '
+        },
         navBtn: {
             signIn: 'להתחבר',
             signOut: 'להתנתק'
         },
         loginRegisterScreen: {
 
-            errorLogin: {
-                infoInvalid: "אימייל או הסיסמה לא נכונים",
-                usersNotFound: "המשתמש לא קיים ",
-                UserIsAlreadyCreated: "המשתמש כבר קיים",
-                loginFaildAlreadyConnect: "המשתמש כבר מחובר בבקשה תבדוק אם יש לך חלונית נוספת ",
-                DBError: "יש בעיה בשרת בבקשה תנסה שוב עוד כמה דקות ואם זה ממשיך בבקשה תגיד לנו",
-                "Network Error": 'יש לנו שגיאת רשת אנא נסה שוב בעוד מספר דקות '
-            },
+
             login: {
                 buttonForLogin: " משמשמת רשום",
                 leabel: "להתחבר לאתר",
@@ -115,6 +122,11 @@ const INS = {
                 leabel: "מספר טלפון",
             }
         },
+        SerachFriendScreen: {
+            startLookin: 'התחל/י חברות ניפלא  '
+
+        },
+
     },
 };
 

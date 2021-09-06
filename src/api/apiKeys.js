@@ -5,6 +5,8 @@ exports.userLoginUrl = (password = '', email = '') => `/api/user/login?password=
 
 exports.queryUsers = (_id = "", query = '') => `/api/friends/getUserForSerach?_id=${_id}&query=${query}`;
 
+exports.getMyFriendsUrl = (_id) => `/api/friends/getFriends?_id=${_id}`
+
 // send {email,password,firstName,lastName}
 //recive {userData}
 exports.userRegisterUrl = "/api/user/register";

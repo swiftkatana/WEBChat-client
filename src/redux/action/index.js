@@ -132,6 +132,7 @@ export const signIn = (data) => {
 };
 
 export const signOut = () => {
+  io.emit("sgin out")
   return {
     type: SIGN_OUT,
   };

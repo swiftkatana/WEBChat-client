@@ -25,8 +25,8 @@ class LogicArea extends React.Component {
 
       }
       io.on('userLive' + this.props.user._id, ({ type, data }) => {
+        console.log('socket work ', type)
         switch (type) {
-
 
           //my friend req have been accept
           case "NEW_FRIEND_REQUEST":
