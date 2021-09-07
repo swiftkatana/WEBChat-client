@@ -1,4 +1,5 @@
 import { CHANGE_LEGUAGE } from "../action/types";
+
 const INS = {
     English: {
         errors: {

@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { reducer } from 'redux-form';
 
-import userReducer from './userReducer'
+import userReducer from '../user/userReducer'
 import userAreaReducer from './chatArea';
 import callReducer from './callReducer';
 import languageReducer from './languageReducer';
