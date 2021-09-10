@@ -1,15 +1,15 @@
-import { combineReducers } from 'redux';
-import { reducer } from 'redux-form';
+import { combineReducers } from "redux"
+import { reducer } from "redux-form"
 
-import userReducer from '../user/userReducer'
-import userAreaReducer from './chatArea';
-import callReducer from './callReducer';
-import languageReducer from './languageReducer';
+import userReducer from "../user/userReducer"
+import userAreaReducer from "./chatArea"
+import callReducer from "./callReducer"
+import languageReducer from "../language/languageReducer"
 
 export default combineReducers({
-    user: userReducer,
-    form: reducer,
-    chatArea: userAreaReducer,
-    language: languageReducer,
-    call: callReducer
-});
+   user: userReducer,
+   form: reducer,
+   chatArea: userAreaReducer,
+   language: languageReducer,
+   call: callReducer,
+})

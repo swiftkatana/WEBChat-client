@@ -1,12 +1,25 @@
 import React, { FC, useEffect } from 'react'
-import { Route, HashRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import DrawerPage from './components/screens/DrawerPage'
 
 import './css/App.css'
+import { CommunicationArea } from './components/brains/CommunicationArea'
+import GotACall from './components/brains/GotACall'
 
 const App: FC = () => {
-	useEffect(() => {}, [])
-	return <DrawerPage></DrawerPage>
+	useEffect(() => {
+		console.log('object')
+	}, [])
+
+	return (
+		<DrawerPage>
+			<CommunicationArea />
+			<GotACall />
+			<HashRouter>
+				<h1>d</h1>
+			</HashRouter>
+		</DrawerPage>
+	)
 }
 export default App
 
@@ -28,7 +41,7 @@ export default App
 
 // }, [user, friends]);
 
-//   <LogicArea />
+//
 //   <HashRouter >
 //     {/* <Route path='/' component={Header} /> */}
 //     {routes.map((route, index) =>

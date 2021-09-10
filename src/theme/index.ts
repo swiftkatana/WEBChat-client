@@ -6,11 +6,12 @@ export default createMuiTheme({
 	},
 	palette: {
 		primary: {
-			main: '#34AB53',
+			main: '#46484a',
+			light: '#46484a',
 		},
 		secondary: {
 			main: '#0071C2',
-			light: '#E1EAF6',
+			light: '#46484a',
 		},
 		error: {
 			main: '#e2704e',
@@ -19,7 +20,7 @@ export default createMuiTheme({
 			primary: '#46484a',
 		},
 		action: {
-			disabled: '#DEE3EF',
+			disabled: '#46484a',
 		},
 	},
 })

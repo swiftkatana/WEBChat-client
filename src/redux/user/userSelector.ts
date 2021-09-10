@@ -3,8 +3,7 @@ import { IStoreRootState } from '../../interfaces/redux/store'
 import { IUsersState } from '../../interfaces/redux/user'
 import { IUser } from '../../interfaces/user/index'
 
-export const userStateSelector = (state: IStoreRootState) =>
-	state.user as IUsersState
+export const userStateSelector = (state: IStoreRootState) => state.user as IUsersState
 
 export const userLoggedInSelector = createSelector(
 	userStateSelector,
