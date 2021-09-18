@@ -1,17 +1,17 @@
 import React, { ReactElement } from 'react'
-import { Button, Fade, Modal, Typography } from '@mui/material'
+import { Backdrop, Button, Fade, Modal, Typography } from '@mui/material'
 import { IButtonProp } from '../../interfaces/modals/index'
 import { Box } from '@mui/system'
 
 interface Props {
-	showModal: Boolean
+	showModal: boolean
 	onShowOrHide: () => void
 	header?: string
 	body?: string
 	buttons: IButtonProp[]
 }
 const style = {
-	position: 'absolute',
+	position: 'absolute' as 'absolute',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
@@ -21,6 +21,7 @@ const style = {
 	boxShadow: 24,
 	p: 4,
 }
+
 export default function GotAMessage({
 	onShowOrHide,
 	showModal,
@@ -57,9 +58,9 @@ export default function GotAMessage({
 						<Typography id='transition-modal-description' sx={{ mt: 2 }}>
 							{body}
 						</Typography>
+						<div>{renderButtons()}</div>
 					</Box>
 				</Fade>
-				<div>{renderButtons()}</div>
 			</Modal>
 		</>
 	)

@@ -4,8 +4,8 @@ import ioMyLive from '../../ioMyLive'
 import { userLoggedInSelector, userSelector } from '../../redux/user/userSelector'
 import { ILiveCall } from '../../interfaces/socketRes/index'
 
-export default GotACall = (): ReactElement => {
-	const newReqSound = new Audio('newReq.mp3')
+export const GotACall = (): ReactElement => {
+	// const newReqSound = new Audio('newReq.mp3')
 	const isLogin = useSelector(userLoggedInSelector)
 	const myUserData = useSelector(userSelector)
 
@@ -27,7 +27,7 @@ export default GotACall = (): ReactElement => {
 		} else if (!isLogin) {
 			ioMyLive.off()
 		}
-	}, [isLogin, newReqSound, myUserData._id])
+	}, [isLogin, myUserData._id])
 
 	return <></>
 }

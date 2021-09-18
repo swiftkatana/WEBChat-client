@@ -5,7 +5,11 @@ import ILenguageState from '../../interfaces/language/index'
 
 export const languageStateSelector = (state: IStoreRootState) => state.language
 
-export const languageSelector = createSelector(
+export const languageNowSelector = createSelector(
 	languageStateSelector,
 	(state: ILenguageState) => state.langNow
+)
+export const languageWordsSelector = createSelector(
+	languageStateSelector,
+	(state: ILenguageState) => state.texts
 )

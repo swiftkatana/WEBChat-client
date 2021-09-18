@@ -1,4 +1,4 @@
-import socketIOClient from 'socket.io-client'
+import { io } from 'socket.io-client'
 import ip from './api/serverIP'
 
-export default new socketIOClient(ip)
+export default io(ip)

@@ -1,13 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ISignInParameters } from '../../interfaces/user/index'
-import {
-	IResponsePostUser,
-	IResponseGetUser,
-} from '../../interfaces/api/post-response'
+import { IResponsePostUser, IResponseGetUser } from '../../interfaces/api/post-response'
 import { IStoreRootState } from '../../interfaces/redux/store'
 import { ERROR_LIST } from '../../enums/error_list'
 import apiRequests from '../../api/apiRequests'
-
+import ioMyLive from '../../ioMyLive'
+import { IApiError } from '../../interfaces/api/index'
 export const signinUser = createAsyncThunk(
 	'user/signinUser',
 	async (
@@ -20,9 +18,12 @@ export const signinUser = createAsyncThunk(
 			if (!loading || requestId !== currentRequestId)
 				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
 
-			return await apiRequests.signIn(userData)
+			const res = await apiRequests.signIn(userData)
+			ioMyLive.emit('loginToTheWebSite', res.data.securityInfo.email)
+			return res
 		} catch (e) {
-			throw rejectWithValue(e.response.data)
+			const error = e as IApiError
+			throw rejectWithValue(error.response.data)
 		}
 	}
 )
@@ -34,7 +35,8 @@ export const getUser = createAsyncThunk(
 			const response = await apiRequests.getUser()
 			return response
 		} catch (e) {
-			throw rejectWithValue(e.response.data)
+			const error = e as IApiError
+			throw rejectWithValue(error.response.data)
 		}
 	}
 )

@@ -1,23 +1,28 @@
-import { createMuiTheme } from '@material-ui/core'
+import { createTheme } from '@mui/material'
 
-export default createMuiTheme({
+export default createTheme({
+	direction: 'ltr',
+
 	typography: {
 		fontFamily: `"Sora", sans-serif`,
 	},
 	palette: {
+		background: {
+			paper: '#3b5998',
+		},
 		primary: {
-			main: '#46484a',
-			light: '#46484a',
+			dark: '#3b6998',
+			main: '#ffff',
+			light: '#3b5891',
 		},
+
 		secondary: {
-			main: '#0071C2',
-			light: '#46484a',
+			main: '#3b5998',
+			contrastText: '#3b5492',
 		},
-		error: {
-			main: '#e2704e',
-		},
+
 		text: {
-			primary: '#46484a',
+			primary: '#000000',
 		},
 		action: {
 			disabled: '#46484a',

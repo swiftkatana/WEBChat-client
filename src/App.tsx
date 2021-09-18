@@ -1,27 +1,42 @@
 import React, { FC, useEffect } from 'react'
-import { HashRouter } from 'react-router-dom'
+import { HashRouter, Route } from 'react-router-dom'
 import DrawerPage from './components/screens/DrawerPage'
 
-import './css/App.css'
+// import './css/App.css'
 import { CommunicationArea } from './components/brains/CommunicationArea'
-import GotACall from './components/brains/GotACall'
+import { GotACall } from './components/brains/GotACall'
+// import { useSelector } from 'react-redux'
+// import { languageNowSelector } from './redux/language/languageSelector'
+import PrivateRoute from './routes/PrivateRoute'
+import routes from './routes/routes'
+import './app.css'
+export const App: FC = () => {
+	// const language = useSelector(languageNowSelector)
 
-const App: FC = () => {
 	useEffect(() => {
 		console.log('object')
 	}, [])
 
+	// const dir = language === 'English' ? 'ltr' : 'rtl'
+
 	return (
-		<DrawerPage>
-			<CommunicationArea />
-			<GotACall />
-			<HashRouter>
-				<h1>d</h1>
-			</HashRouter>
-		</DrawerPage>
+		<>
+			<DrawerPage>
+				<HashRouter>
+					<CommunicationArea />
+					<GotACall />
+					{routes.map((route, index) =>
+						route.public ? (
+							<Route {...route} key={index} />
+						) : (
+							<PrivateRoute {...route} key={index} />
+						)
+					)}
+				</HashRouter>
+			</DrawerPage>
+		</>
 	)
 }
-export default App
 
 // useEffect(() => {
 //   if (!user)
