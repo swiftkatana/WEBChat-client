@@ -15,8 +15,9 @@ const useStyles = makeStyles<Theme>(({ breakpoints, palette }) =>
 			},
 		},
 		changeModeRL: {
-			[breakpoints.down('lg')]: {
-				width: '10%',
+			[breakpoints.up('md')]: {
+				width: '30%',
+				height: '100%',
 			},
 			[breakpoints.down('md')]: {
 				width: '70%',

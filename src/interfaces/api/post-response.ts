@@ -1,4 +1,5 @@
 import { IUser } from '../user/index'
+import { IRelationship } from '../relationship/index'
 
 export interface IResponsePost {
 	data: any
@@ -27,4 +28,8 @@ export interface IErrorPostUser {
 	error: string
 	status: number
 	field: string
+}
+export interface IResponseGetAllRelationships {
+	data: IRelationship[]
+	status: string
 }

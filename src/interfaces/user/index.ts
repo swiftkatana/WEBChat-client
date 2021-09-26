@@ -35,10 +35,25 @@ export interface IUserPersonalInfo {
 	firstName: string
 	lastName: string
 	phone: string
+	profileImage: string
 }
 
 // more interfaces for user
 export interface ISignInParameters {
 	password: string
 	email: string
+}
+
+export interface ICreateUser {
+	password: string
+	email: string
+	firstName: string
+	lastName: string
+}
+export interface IUsersState {
+	currentRequestId: string | undefined
+	user: IUser
+	error: { field: string; error: string; status: number } | null
+	loading: boolean
+	isLoggedIn: Boolean
 }

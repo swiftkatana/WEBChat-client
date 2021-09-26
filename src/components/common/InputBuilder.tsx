@@ -81,9 +81,11 @@ const InputBuilder = ({
 				if (onChange) onChange(e)
 				registerInput.onChange(e)
 			}}
+			error={Boolean(showError)}
 			placeholder={placeholder}
 			type={renderType()}
 			InputProps={{ endAdornment: renderAdornt() }}
+			helperText={showError}
 		/>
 	)
 }

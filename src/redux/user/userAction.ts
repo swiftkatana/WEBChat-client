@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ISignInParameters } from '../../interfaces/user/index'
+import { ISignInParameters, ICreateUser } from '../../interfaces/user/index'
 import { IResponsePostUser, IResponseGetUser } from '../../interfaces/api/post-response'
 import { IStoreRootState } from '../../interfaces/redux/store'
 import { ERROR_LIST } from '../../enums/error_list'
@@ -19,6 +19,29 @@ export const signinUser = createAsyncThunk(
 				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
 
 			const res = await apiRequests.signIn(userData)
+			ioMyLive.emit('loginToTheWebSite', res.data.securityInfo.email)
+			return res
+		} catch (e) {
+			const error = e as IApiError
+			throw rejectWithValue(error.response.data)
+		}
+	}
+)
+
+export const signUpUser = createAsyncThunk(
+	'user/signUpUser',
+	async (
+		userData: ICreateUser,
+		{ getState, requestId, rejectWithValue, dispatch }
+	): Promise<IResponsePostUser> => {
+		try {
+			const state = getState() as IStoreRootState
+			const { loading, currentRequestId } = state.user
+			if (!loading || requestId !== currentRequestId)
+				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
+
+			const res = await apiRequests.signUp(userData)
+
 			ioMyLive.emit('loginToTheWebSite', res.data.securityInfo.email)
 			return res
 		} catch (e) {

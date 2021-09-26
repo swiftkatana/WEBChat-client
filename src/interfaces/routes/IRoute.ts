@@ -1,8 +1,9 @@
-import { FC } from 'react';
+import { FC } from 'react'
 
 export interface IRoute {
-  component: FC<any>;
-  path: string;
-  exact?: boolean;
-  public?: boolean;
+	name: string
+	component: FC<any>
+	path: string
+	exact: boolean
+	private: boolean
 }

@@ -5,19 +5,16 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemText from '@mui/material/ListItemText'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { useDispatch, useSelector } from 'react-redux'
 import { createStyles, makeStyles } from '@mui/styles'
 
-// import history, { changeURL } from '../../history'
-import { languageStateSelector } from '../../redux/language/languageSelector'
-import { changeLeguage } from '../../redux/language/languageReducer'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
 import { Theme } from '@mui/material'
+import { LangChangeMode } from '../common/LangChangeMode'
+import { LinkListItem } from '../drawer/LinkListItem'
+import routes from '../../routes/routes'
 
 const drawerWidth = 240
 
@@ -32,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			width: '100%',
 			height: '92%',
 			display: 'flex',
+			position: 'relative',
 			alignItems: 'center',
 			justifyContent: 'center',
 			backgroundColor: theme.palette.primary.light,
@@ -47,39 +45,20 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function DrawerPage({ window, children }: Props) {
 	const classes = useStyles()
 	const [mobileOpen, setMobileOpen] = useState(false)
-	const language = useSelector(languageStateSelector)
-	const dispatch = useDispatch()
 
 	const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
 
-	const changeLeg = (language = '') => {
-		dispatch(changeLeguage(language))
-	}
-
-	const renderImgLeg = () => {
-		let nextLan = language.languages.filter(l => l !== language.langNow)
-		return (
-			<img
-				src={`${nextLan[0]}.png`}
-				onClick={() => changeLeg(nextLan[0])}
-				className='imgLeg'
-				alt='icon for change leg right now hebrew'
-			/>
-		)
-	}
 	const drawer = (
 		<div dir={'ltr'}>
 			<Toolbar />
 			<Divider />
 			<List>
-				{['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-					<ListItem button key={text}>
-						<ListItemText primary={text} />
-					</ListItem>
+				{routes.map(route => (
+					<LinkListItem path={route.path} show={route.private} name={route.name} />
 				))}
 			</List>
 			<Divider />
-			{renderImgLeg()}
+			<LangChangeMode />
 		</div>
 	)
 	const container = window !== undefined ? () => window().document.body : undefined

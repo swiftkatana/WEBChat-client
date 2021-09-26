@@ -1,6 +1,6 @@
 import { FC, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {
 	userErrorSelector,
 	userLoggedInSelector,
@@ -11,29 +11,19 @@ import { languageWordsSelector } from '../../redux/language/languageSelector'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import InputBuilder from '../InputBuilder'
+import InputBuilder from '../common/InputBuilder'
 import { makeStyles, createStyles } from '@mui/styles'
 import { Theme, Typography } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import { clearUserError } from 'redux/user/userReducer'
+import { ICreateUser } from '../../interfaces/user/index'
+import { signUpUser } from '../../redux/user/userAction'
 
 const schema = yup.object().shape({
-	email: yup
-		.string()
-		.trim()
-		.email()
-		.matches(/^[a-z\u05D0-\u05EA]+$/i)
-		.required(),
-	password: yup
-		.string()
-		.trim()
-		.matches(/^[a-z\u05D0-\u05EA]+$/i)
-		.required(),
-	confirmPassword: yup
-		.string()
-		.trim()
-		.matches(/^[a-z\u05D0-\u05EA]+$/i)
-		.equals(['password'])
-		.required(),
+	email: yup.string().trim().email().required(),
+	password: yup.string().trim().required(),
+	firstName: yup.string().trim().required(),
+	lastName: yup.string().trim().required(),
 })
 
 const useStyles = makeStyles<Theme>(({ breakpoints }) =>
@@ -46,13 +36,11 @@ const useStyles = makeStyles<Theme>(({ breakpoints }) =>
 		},
 		input: {
 			// ...useResponseStyle({ width: '100%' },{ width: '100%' },{ width: '100%' },{ width: '100%' },),
+			[breakpoints.up('md')]: {
+				margin: '2rem 0 ',
+				width: '30%',
+			},
 			[breakpoints.down('lg')]: {
-				width: '50%',
-			},
-			[breakpoints.down('md')]: {
-				width: '70%',
-			},
-			[breakpoints.down('xs')]: {
 				width: '80%',
 			},
 			margin: '1rem 0 ',
@@ -72,6 +60,7 @@ export const RegisterForm: FC = () => {
 	const isLoggedIn = useSelector(userLoggedInSelector)
 	const language = useSelector(languageWordsSelector)
 	const loading = useSelector(userLoadingSelector)
+	const dispatch = useDispatch()
 
 	const history = useHistory()
 	const classes = useStyles()
@@ -82,13 +71,20 @@ export const RegisterForm: FC = () => {
 
 	useEffect(() => {
 		isLoggedIn && history?.push(Paths.LOBY)
+		return () => {
+			dispatch(clearUserError())
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isLoggedIn])
 
-	const onFormSubmit = ({ email, password }: FormErrors) => {}
+	const onFormSubmit = (formData: ICreateUser) => {
+		console.log('register')
+		dispatch(signUpUser(formData))
+	}
+
 	const renderError = () => {
 		if (userError) return userError.error
-		else if (errors.password?.message) return errors.password?.message
+		else if (errors.lastName?.message) return errors.lastName?.message
 	}
 
 	return (
@@ -104,7 +100,6 @@ export const RegisterForm: FC = () => {
 			</div>
 			<div className={classes.input}>
 				<InputBuilder
-					pattern={/\d+($|[^.\d])/i}
 					name='password'
 					type='password'
 					placeholder={language.loginRegisterScreen.password.placeholder}
@@ -118,7 +113,7 @@ export const RegisterForm: FC = () => {
 					name='firstName'
 					type='text'
 					placeholder={language.loginRegisterScreen.firstName.leabel}
-					showError={renderError()}
+					showError={errors.firstName?.message}
 					register={register}
 				/>
 			</div>
@@ -133,7 +128,7 @@ export const RegisterForm: FC = () => {
 				/>
 			</div>
 			<div className={classes.btnContainer}>
-				<LoadingButton loading={loading} loadingPosition='start' variant='outlined'>
+				<LoadingButton type='submit' loading={loading} loadingPosition='start' variant='outlined'>
 					<Typography>{language.loginRegisterScreen.register.button}</Typography>
 				</LoadingButton>
 			</div>

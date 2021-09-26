@@ -6,7 +6,8 @@ import Paths from './path-names'
 
 const PrivateRoute = (route: IRoute) => {
 	const isLoggedIn = useSelector(userLoggedInSelector)
-	return isLoggedIn ? <Route {...route} /> : <Redirect to={Paths.LOGIN} />
+	if (isLoggedIn) return <Route {...route} />
+	else return <Redirect to={Paths.LOGIN} />
 }
 
 export default PrivateRoute

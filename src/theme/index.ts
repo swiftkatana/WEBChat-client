@@ -8,12 +8,12 @@ export default createTheme({
 	},
 	palette: {
 		background: {
-			paper: '#3b5998',
+			paper: '#303F9F',
 		},
 		primary: {
-			dark: '#3b6998',
+			dark: '#303F9F',
 			main: '#ffff',
-			light: '#3b5891',
+			light: '#283593',
 		},
 
 		secondary: {

@@ -1,40 +1,42 @@
 import React, { FC, useEffect } from 'react'
-import { HashRouter, Route } from 'react-router-dom'
+import { Router, Route, Redirect, Switch } from 'react-router-dom'
 import DrawerPage from './components/screens/DrawerPage'
 
-// import './css/App.css'
-import { CommunicationArea } from './components/brains/CommunicationArea'
-import { GotACall } from './components/brains/GotACall'
-// import { useSelector } from 'react-redux'
-// import { languageNowSelector } from './redux/language/languageSelector'
+// import { CommunicationArea } from './components/brains/CommunicationArea'
+// import { GotACall } from './components/brains/GotACall'
 import PrivateRoute from './routes/PrivateRoute'
 import routes from './routes/routes'
+import history from './history'
 import './app.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { userLoggedInSelector } from './redux/user/userSelector'
+import { getUser } from 'redux/user/userAction'
 export const App: FC = () => {
-	// const language = useSelector(languageNowSelector)
-
+	const dispatch = useDispatch()
+	const isLoggedIn = useSelector(userLoggedInSelector)
 	useEffect(() => {
-		console.log('object')
-	}, [])
-
-	// const dir = language === 'English' ? 'ltr' : 'rtl'
+		if (!isLoggedIn) {
+			dispatch(getUser())
+		}
+	}, [dispatch, isLoggedIn])
 
 	return (
-		<>
+		<Router history={history}>
 			<DrawerPage>
-				<HashRouter>
-					<CommunicationArea />
-					<GotACall />
+				<Switch>
+					{/* <CommunicationArea /> */}
+					{/* <GotACall /> */}
 					{routes.map((route, index) =>
-						route.public ? (
-							<Route {...route} key={index} />
-						) : (
+						route.private ? (
 							<PrivateRoute {...route} key={index} />
+						) : (
+							<Route {...route} key={index} />
 						)
 					)}
-				</HashRouter>
+					<Redirect to='/' />
+				</Switch>
 			</DrawerPage>
-		</>
+		</Router>
 	)
 }
 
