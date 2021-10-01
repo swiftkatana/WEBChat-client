@@ -1,6 +1,6 @@
 import React, { ReactElement, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import ioMyLive from '../../ioMyLive'
+import ioMyLive from '../../utils/ioMyLive'
 import { userLoggedInSelector, userSelector } from '../../redux/user/userSelector'
 import { ILiveCall } from '../../interfaces/socketRes/index'
 

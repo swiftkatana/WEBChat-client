@@ -33,3 +33,8 @@ export interface IResponseGetAllRelationships {
 	data: IRelationship[]
 	status: string
 }
+
+export interface IResponseRelationships {
+	data: IRelationship
+	status: string
+}

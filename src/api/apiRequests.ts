@@ -4,11 +4,13 @@ import { ReqTypes, ReqType } from '../interfaces/api/request-types'
 import { URLS } from './api-urls'
 import { ISignInParameters, ICreateUser } from '../interfaces/user/index'
 import { IApiError } from '../interfaces/api/index'
+import { IResponseRelationships } from '../interfaces/api/post-response'
 import {
 	IResponsePostUser,
 	IResponseGetUser,
 	IResponseGetAllRelationships,
 } from '../interfaces/api/post-response'
+import { IParamatersUpdateRelationship } from 'interfaces/relationship'
 
 let ip: string = baseUrl.testServer
 
@@ -51,7 +53,14 @@ class ApiRequests {
 	// ----------- relationship ------------
 
 	public async getAllRelationships(): Promise<IResponseGetAllRelationships> {
-		const { data, status } = await this.sendRequest(ReqTypes.GET, URLS.RELATIONSHIP)
+		const { data, status } = await this.sendRequest(ReqTypes.GET, URLS.RELATIONSHIPALl)
+		return { data, status }
+	}
+
+	public async updateRelationshipRequest(
+		parms: IParamatersUpdateRelationship
+	): Promise<IResponseRelationships> {
+		const { data, status } = await this.sendRequest(ReqTypes.POST, URLS.RELATIONSHIP, parms)
 		return { data, status }
 	}
 }

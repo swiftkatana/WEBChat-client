@@ -4,6 +4,10 @@ export interface IApiError {
 interface IApiErrorResponse {
 	data: IApiErrorData
 }
-interface IApiErrorData {
+export interface IApiErrorData {
+	field: string
 	error: string
+	status: number
+	message?: string
+	statusCode?: number
 }

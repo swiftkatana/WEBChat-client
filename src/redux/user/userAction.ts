@@ -4,8 +4,9 @@ import { IResponsePostUser, IResponseGetUser } from '../../interfaces/api/post-r
 import { IStoreRootState } from '../../interfaces/redux/store'
 import { ERROR_LIST } from '../../enums/error_list'
 import apiRequests from '../../api/apiRequests'
-import ioMyLive from '../../ioMyLive'
 import { IApiError } from '../../interfaces/api/index'
+import { sendIoMessage } from '../../utils/ioMyLive'
+import { Io_message_type } from 'enums/socketIo'
 export const signinUser = createAsyncThunk(
 	'user/signinUser',
 	async (
@@ -19,7 +20,7 @@ export const signinUser = createAsyncThunk(
 				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
 
 			const res = await apiRequests.signIn(userData)
-			ioMyLive.emit('loginToTheWebSite', res.data.securityInfo.email)
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
 			return res
 		} catch (e) {
 			const error = e as IApiError
@@ -42,7 +43,7 @@ export const signUpUser = createAsyncThunk(
 
 			const res = await apiRequests.signUp(userData)
 
-			ioMyLive.emit('loginToTheWebSite', res.data.securityInfo.email)
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
 			return res
 		} catch (e) {
 			const error = e as IApiError
@@ -55,8 +56,9 @@ export const getUser = createAsyncThunk(
 	'user/getUser',
 	async (_, { rejectWithValue }): Promise<IResponseGetUser> => {
 		try {
-			const response = await apiRequests.getUser()
-			return response
+			const res = await apiRequests.getUser()
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
+			return res
 		} catch (e) {
 			const error = e as IApiError
 			throw rejectWithValue(error.response.data)

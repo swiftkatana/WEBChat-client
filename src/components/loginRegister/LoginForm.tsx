@@ -12,13 +12,12 @@ import {
 	userLoggedInSelector,
 	userLoadingSelector,
 } from '../../redux/user/userSelector'
-import Paths from '../../routes/path-names'
 import { languageWordsSelector } from '../../redux/language/languageSelector'
 import InputBuilder from '../common/InputBuilder'
 import { signinUser } from '../../redux/user/userAction'
 import { ISignInParameters } from '../../interfaces/user/index'
 import { clearUserError } from 'redux/user/userReducer'
-
+import historyMain from '../../history'
 const schema = yup.object().shape({
 	email: yup.string().trim().email().required(),
 	password: yup.string().trim().required('Please Enter your password'),
@@ -72,7 +71,8 @@ export const LoginForm: FC = () => {
 		dispatch(clearUserError())
 	}, [allWatch.email, allWatch.password, dispatch])
 	useEffect(() => {
-		isLoggedIn && history?.push(Paths.LOBY)
+		const from = (historyMain.location.state as any)?.from || '/'
+		isLoggedIn && history?.push(from)
 		return () => {
 			dispatch(clearUserError())
 		}

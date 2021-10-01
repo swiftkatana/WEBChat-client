@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import './style.css'
 import ChatWindow from '../../chat/ChatWindow'
 import { changeURL } from '../../../history'
-import io from '../../../ioMyLive'
+import io from '../../../utils/ioMyLive'
 function getTimeIn24Format() {
 	var d = new Date()
 	var n = d.toLocaleString([], { hour: '2-digit', minute: '2-digit' })

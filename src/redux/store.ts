@@ -8,6 +8,6 @@ export default configureStore({
 	reducer: {
 		language: languageReducer,
 		user: userReducer,
-		relationships: relationshipReducer,
+		relationship: relationshipReducer,
 	},
 })

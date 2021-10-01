@@ -1,3 +1,4 @@
+import { IApiErrorData } from 'interfaces/api'
 import userRoles from '../../enums/userRoles'
 export interface IUser {
 	_id: string
@@ -53,7 +54,7 @@ export interface ICreateUser {
 export interface IUsersState {
 	currentRequestId: string | undefined
 	user: IUser
-	error: { field: string; error: string; status: number } | null
+	error: IApiErrorData | null
 	loading: boolean
 	isLoggedIn: Boolean
 }

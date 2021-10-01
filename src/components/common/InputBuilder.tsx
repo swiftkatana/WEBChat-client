@@ -1,4 +1,4 @@
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
+import React, { ChangeEvent, MouseEvent, useState, FC } from 'react'
 import { UseFormRegister } from 'react-hook-form'
 import { InputAdornment, TextField, Theme } from '@mui/material'
 import { makeStyles, createStyles } from '@mui/styles'
@@ -33,7 +33,7 @@ const useStyles = makeStyles<Theme, IStyleProps>(() =>
 	})
 )
 
-const InputBuilder = ({
+const InputBuilder: FC<Props> = ({
 	placeholder,
 	type,
 	register,
@@ -42,7 +42,7 @@ const InputBuilder = ({
 	pattern,
 	filter,
 	onChange,
-}: Props) => {
+}) => {
 	const registerInput = register(name, filter)
 	const classes = useStyles({ showError })
 	const onOrFalse = type === 'password'

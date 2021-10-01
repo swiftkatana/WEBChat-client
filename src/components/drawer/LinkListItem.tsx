@@ -18,7 +18,6 @@ export const LinkListItem = ({ path, name, show }: Props) => {
 	const location = useLocation()
 	const onClick = () => {
 		changeURL(path)
-		console.log(path)
 	}
 	useEffect(() => {
 		if (location.pathname === path) setDisabled(true)

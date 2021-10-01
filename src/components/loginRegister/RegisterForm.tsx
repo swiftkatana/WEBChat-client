@@ -6,7 +6,6 @@ import {
 	userLoggedInSelector,
 	userLoadingSelector,
 } from '../../redux/user/userSelector'
-import Paths from 'routes/path-names'
 import { languageWordsSelector } from '../../redux/language/languageSelector'
 import * as yup from 'yup'
 import { useForm } from 'react-hook-form'
@@ -18,6 +17,7 @@ import { LoadingButton } from '@mui/lab'
 import { clearUserError } from 'redux/user/userReducer'
 import { ICreateUser } from '../../interfaces/user/index'
 import { signUpUser } from '../../redux/user/userAction'
+import historyMain from '../../history'
 
 const schema = yup.object().shape({
 	email: yup.string().trim().email().required(),
@@ -70,7 +70,8 @@ export const RegisterForm: FC = () => {
 	const { errors } = formState
 
 	useEffect(() => {
-		isLoggedIn && history?.push(Paths.LOBY)
+		const from = (historyMain.location.state as any)?.from || '/'
+		isLoggedIn && history?.push(from)
 		return () => {
 			dispatch(clearUserError())
 		}
