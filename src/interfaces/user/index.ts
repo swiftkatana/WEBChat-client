@@ -18,6 +18,7 @@ interface IAddress {
 export interface IUserStatusInfo {
 	role: userRoles
 	address: IAddress
+	description: string
 	chats: {}
 	friends: {}
 	getFriendRequests: {}

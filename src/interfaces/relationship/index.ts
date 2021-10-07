@@ -2,6 +2,7 @@ import { IApiErrorData } from 'interfaces/api'
 import { relationship_status } from '../../enums/relationship_status'
 import { relationship_types } from '../../enums/relationship_types'
 export interface IRelationship {
+	_id: string
 	status: relationship_status
 	users: string[]
 	chatId: string

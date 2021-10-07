@@ -34,6 +34,11 @@ export interface IResponseGetAllRelationships {
 	status: string
 }
 
+export interface ISerachUsersGet {
+	data: IUser[]
+	status: string
+}
+
 export interface IResponseRelationships {
 	data: IRelationship
 	status: string

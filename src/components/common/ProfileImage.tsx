@@ -3,9 +3,7 @@ import { styled } from '@mui/system'
 import { Badge, Avatar } from '@mui/material'
 
 interface Props {
-	fullName: string
-	image?: string
-	online: boolean
+	image: { online?: boolean; type: 'url' | 'name'; url: string }
 }
 
 function stringToColor(string: string) {
@@ -65,10 +63,11 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 		},
 	},
 }))
-export const ProfileImage = ({ fullName, image, online }: Props) => {
+export const ProfileImage = ({ image }: Props) => {
+	const { online, type, url } = image
 	const renderImage = () => {
-		if (image) return <Avatar alt={`Avatar n°${1 + 1}`} src={image} />
-		else return <Avatar {...stringAvatar(fullName)} />
+		if (type === 'url') return <Avatar alt={`Avatar n°${1 + 1}`} src={url} />
+		else return <Avatar {...stringAvatar(url)} />
 	}
 	return (
 		<StyledBadge

@@ -40,3 +40,7 @@ export const relationshipErrorSelector = createSelector(
 	relationshipStateSelector,
 	state => state?.error
 )
+export const relationshipsLoadingSelector = createSelector(
+	relationshipStateSelector,
+	state => state.loading
+)

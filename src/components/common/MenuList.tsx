@@ -1,13 +1,19 @@
 import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import BlockIcon from '@mui/icons-material/Block'
-import DeleteIcon from '@mui/icons-material/Delete'
+
 import { Menu, MenuItem, Theme } from '@mui/material'
 import { createStyles, makeStyles } from '@mui/styles'
-import { useSnackbar } from 'notistack'
 
-interface Props {}
+export interface IMenuListButtons {
+	text: string
+	Icon?: any
+}
+
+interface Props {
+	onClick: (text: string) => void
+	buttons: IMenuListButtons[]
+}
 const ITEM_HEIGHT = 48
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -21,20 +27,19 @@ const useStyles = makeStyles((theme: Theme) =>
 		},
 	})
 )
-export const MenuList = (props: Props) => {
+export const MenuList = ({ onClick, buttons }: Props) => {
 	const classes = useStyles()
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-	const { enqueueSnackbar } = useSnackbar()
 	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget)
 	}
 	const handleClose = () => {
 		setAnchorEl(null)
 	}
-	const handleClickBtn = (text: 'Delete' | 'Block') => {
+	const handleClickBtn = (text: string) => {
 		setAnchorEl(null)
-		enqueueSnackbar(text, { variant: text === 'Delete' ? 'warning' : 'success' })
+		onClick(text)
 	}
 	return (
 		<>
@@ -60,12 +65,15 @@ export const MenuList = (props: Props) => {
 					},
 				}}
 			>
-				<MenuItem className={classes.containerItem} onClick={() => handleClickBtn('Block')}>
-					<span> Block </span> <BlockIcon />
-				</MenuItem>
-				<MenuItem className={classes.containerItem} onClick={() => handleClickBtn('Delete')}>
-					<span>Delete</span> <DeleteIcon />
-				</MenuItem>
+				{buttons.map(button => (
+					<MenuItem
+						key={button.text}
+						className={classes.containerItem}
+						onClick={() => handleClickBtn(button.text)}
+					>
+						<span> {button.text} </span> <button.Icon />
+					</MenuItem>
+				))}
 			</Menu>
 		</>
 	)

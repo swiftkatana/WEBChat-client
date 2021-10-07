@@ -4,7 +4,7 @@ import { ReqTypes, ReqType } from '../interfaces/api/request-types'
 import { URLS } from './api-urls'
 import { ISignInParameters, ICreateUser } from '../interfaces/user/index'
 import { IApiError } from '../interfaces/api/index'
-import { IResponseRelationships } from '../interfaces/api/post-response'
+import { IResponseRelationships, ISerachUsersGet } from '../interfaces/api/post-response'
 import {
 	IResponsePostUser,
 	IResponseGetUser,
@@ -48,6 +48,11 @@ class ApiRequests {
 	}
 	public async getUser(): Promise<IResponseGetUser> {
 		const { data, status } = await this.sendRequest(ReqTypes.GET, URLS.USER)
+		return { data, status }
+	}
+
+	public async searchUsers(query: string): Promise<ISerachUsersGet> {
+		const { data, status } = await this.sendRequest(ReqTypes.GET, URLS.USER_SEARCH_USERS + query)
 		return { data, status }
 	}
 	// ----------- relationship ------------

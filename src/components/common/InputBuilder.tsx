@@ -1,6 +1,6 @@
 import React, { ChangeEvent, MouseEvent, useState, FC } from 'react'
 import { UseFormRegister } from 'react-hook-form'
-import { InputAdornment, TextField, Theme } from '@mui/material'
+import { InputAdornment, TextField, Theme, CircularProgress } from '@mui/material'
 import { makeStyles, createStyles } from '@mui/styles'
 import IconButton from '@mui/material/IconButton'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
@@ -11,12 +11,13 @@ interface IStyleProps {
 interface Props {
 	placeholder: string
 	name: any
-	type: string
+	type: 'text' | 'password' | 'email' | 'phone'
 	register: UseFormRegister<any>
 	showError: string | undefined
 	filter?: {}
 	onChange?: (input: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {}
 	pattern?: RegExp
+	loading?: boolean
 }
 
 const useStyles = makeStyles<Theme, IStyleProps>(() =>
@@ -42,6 +43,7 @@ const InputBuilder: FC<Props> = ({
 	pattern,
 	filter,
 	onChange,
+	loading,
 }) => {
 	const registerInput = register(name, filter)
 	const classes = useStyles({ showError })
@@ -63,6 +65,7 @@ const InputBuilder: FC<Props> = ({
 					</IconButton>
 				</InputAdornment>
 			)
+		else if (loading) return <CircularProgress disableShrink />
 		return <></>
 	}
 	const renderType = () => {

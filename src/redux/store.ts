@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
+import friendsReducer from './friends/friendsReducer'
 
 import languageReducer from './language/languageReducer'
 import relationshipReducer from './relationship/relationshipReducer'
@@ -9,5 +10,6 @@ export default configureStore({
 		language: languageReducer,
 		user: userReducer,
 		relationship: relationshipReducer,
+		friends: friendsReducer,
 	},
 })
