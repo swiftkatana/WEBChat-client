@@ -19,5 +19,5 @@ export interface ILiveCall {
 
 export interface message {
 	type: Io_message_type
-	data: any
+	data?: any
 }

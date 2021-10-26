@@ -1,6 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ISignInParameters, ICreateUser } from '../../interfaces/user/index'
-import { IResponsePostUser, IResponseGetUser } from '../../interfaces/api/post-response'
+import {
+	IResponsePostUser,
+	IResponseGetUser,
+	IUserSignOut,
+} from '../../interfaces/api/post-response'
 import { IStoreRootState } from '../../interfaces/redux/store'
 import { ERROR_LIST } from '../../enums/error_list'
 import apiRequests from '../../api/apiRequests'
@@ -20,7 +24,7 @@ export const signinUser = createAsyncThunk(
 				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
 
 			const res = await apiRequests.signIn(userData)
-			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data._id })
 			return res
 		} catch (e) {
 			const error = e as IApiError
@@ -43,7 +47,7 @@ export const signUpUser = createAsyncThunk(
 
 			const res = await apiRequests.signUp(userData)
 
-			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data._id })
 			return res
 		} catch (e) {
 			const error = e as IApiError
@@ -57,7 +61,21 @@ export const getUser = createAsyncThunk(
 	async (_, { rejectWithValue }): Promise<IResponseGetUser> => {
 		try {
 			const res = await apiRequests.getUser()
-			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data.securityInfo.email })
+			sendIoMessage({ type: Io_message_type.LOGIN, data: res.data._id })
+			return res
+		} catch (e) {
+			const error = e as IApiError
+			throw rejectWithValue(error.response.data)
+		}
+	}
+)
+
+export const signOut = createAsyncThunk(
+	'user/signOut',
+	async (_, { rejectWithValue }): Promise<IUserSignOut> => {
+		try {
+			const res = await apiRequests.signOut()
+			sendIoMessage({ type: Io_message_type.LOGOUT })
 			return res
 		} catch (e) {
 			const error = e as IApiError

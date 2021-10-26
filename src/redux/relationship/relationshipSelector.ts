@@ -16,7 +16,7 @@ export const relationshipPendingGotSelector = createSelector(StateSelector, stat
 		.filter(
 			relationship =>
 				relationship.status === relationship_status.PENDING &&
-				relationship.users[1] === state.user.user.securityInfo.email
+				relationship.userId2 === state.user.user._id
 		)
 		.sort((a, b) => b.updateAt - a.updateAt)
 )
@@ -26,7 +26,7 @@ export const relationshipPendingSentSelector = createSelector(StateSelector, sta
 		.filter(
 			relationship =>
 				relationship.status === relationship_status.PENDING &&
-				relationship.users[0] === state.user.user.securityInfo.email
+				relationship.userId1 === state.user.user._id
 		)
 		.sort((a, b) => b.updateAt - a.updateAt)
 )

@@ -1,10 +1,15 @@
+import { IParamatersCreateRelationship } from 'interfaces/relationship/index'
 import axios from 'axios'
 import baseUrl from './base-url'
 import { ReqTypes, ReqType } from '../interfaces/api/request-types'
 import { URLS } from './api-urls'
 import { ISignInParameters, ICreateUser } from '../interfaces/user/index'
 import { IApiError } from '../interfaces/api/index'
-import { IResponseRelationships, ISerachUsersGet } from '../interfaces/api/post-response'
+import {
+	IResponseRelationships,
+	ISerachUsersGet,
+	IUserSignOut,
+} from '../interfaces/api/post-response'
 import {
 	IResponsePostUser,
 	IResponseGetUser,
@@ -41,6 +46,10 @@ class ApiRequests {
 		const { data, status } = await this.sendRequest(ReqTypes.POST, URLS.AUTHENTICATE, userData)
 		return { data, status }
 	}
+	public async signOut(): Promise<IUserSignOut> {
+		const { status } = await this.sendRequest(ReqTypes.POST, URLS.AUTHENTICATE_LOGOUT)
+		return { status }
+	}
 
 	public async signUp(userData: ICreateUser): Promise<IResponsePostUser> {
 		const { data, status } = await this.sendRequest(ReqTypes.POST, URLS.REGISTER, userData)
@@ -51,10 +60,19 @@ class ApiRequests {
 		return { data, status }
 	}
 
+	// ----------- friends ------------
+
+	public async getFriendsProfiles(usersIds: string[]): Promise<ISerachUsersGet> {
+		const { data, status } = await this.sendRequest(ReqTypes.POST, URLS.GET_USERS_PROFILES, {
+			usersIds,
+		})
+		return { data, status }
+	}
 	public async searchUsers(query: string): Promise<ISerachUsersGet> {
 		const { data, status } = await this.sendRequest(ReqTypes.GET, URLS.USER_SEARCH_USERS + query)
 		return { data, status }
 	}
+
 	// ----------- relationship ------------
 
 	public async getAllRelationships(): Promise<IResponseGetAllRelationships> {
@@ -64,6 +82,13 @@ class ApiRequests {
 
 	public async updateRelationshipRequest(
 		parms: IParamatersUpdateRelationship
+	): Promise<IResponseRelationships> {
+		const { data, status } = await this.sendRequest(ReqTypes.PATCH, URLS.RELATIONSHIP, parms)
+		return { data, status }
+	}
+
+	public async createRelationshipRequest(
+		parms: IParamatersCreateRelationship
 	): Promise<IResponseRelationships> {
 		const { data, status } = await this.sendRequest(ReqTypes.POST, URLS.RELATIONSHIP, parms)
 		return { data, status }

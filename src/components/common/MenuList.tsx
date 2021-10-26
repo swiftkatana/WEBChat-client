@@ -71,7 +71,7 @@ export const MenuList = ({ onClick, buttons }: Props) => {
 						className={classes.containerItem}
 						onClick={() => handleClickBtn(button.text)}
 					>
-						<span> {button.text} </span> <button.Icon />
+						<span> {button.text} </span> {(button.Icon && <button.Icon />) || null}
 					</MenuItem>
 				))}
 			</Menu>

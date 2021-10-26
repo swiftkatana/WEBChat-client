@@ -39,6 +39,10 @@ export interface ISerachUsersGet {
 	status: string
 }
 
+export interface IUserSignOut {
+	status: string
+}
+
 export interface IResponseRelationships {
 	data: IRelationship
 	status: string

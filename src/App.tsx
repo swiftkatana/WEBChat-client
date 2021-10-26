@@ -7,10 +7,12 @@ import PrivateRoute from './routes/PrivateRoute'
 import routes from './routes/routes'
 import history from './history'
 import './app.css'
-import { SnackBarStack } from 'components/SnackBarStack'
+import { SnackBarStack } from 'components/screens/SnackBarStack'
 import { ErrorArea } from 'components/brains/ErrorArea'
 
 export const App: FC = () => {
+	console.log(document.cookie)
+
 	return (
 		<Router history={history}>
 			<SnackBarStack>

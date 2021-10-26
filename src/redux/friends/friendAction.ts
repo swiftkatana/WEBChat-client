@@ -25,3 +25,25 @@ export const serachUsers = createAsyncThunk(
 		}
 	}
 )
+
+export const getFriendsProfiles = createAsyncThunk(
+	'friends/getFriendsProfiles',
+	async (
+		usersIds: string[],
+		{ getState, requestId, rejectWithValue, dispatch }
+	): Promise<ISerachUsersGet> => {
+		try {
+			const state = getState() as IStoreRootState
+			const { loading, currentRequestId } = state.friends
+			if (!loading || requestId !== currentRequestId)
+				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
+
+			const res = await apiRequests.getFriendsProfiles(usersIds)
+			return res
+		} catch (e) {
+			const error = e as IApiError
+			if (error?.response?.data) throw rejectWithValue(error?.response?.data)
+			else throw rejectWithValue(e)
+		}
+	}
+)

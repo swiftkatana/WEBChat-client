@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { friendLoadingSelector, serachUsersSelector } from 'redux/friends/friendsSelector'
 import { serachUsers } from 'redux/friends/friendAction'
+import { SwiperFriendList } from '../listsItems/SwiperFriendList'
 import { ListItemCommon } from 'components/common/ListItemCommon'
-import { getImageOrName } from 'utils/whatToShowUserProfileImage'
 
 const useStyles = makeStyles(({ palette }: Theme) =>
 	createStyles({
@@ -40,18 +40,21 @@ export const AddSwiperFriend: FC<Props> = ({ show, toggleDrawer }) => {
 		}, 700)
 		return () => clearTimeout(IdSetTimeout)
 	}, [dispatch, watchSerach])
-	const renderList = () =>
-		serachUsersList.map(user => {
-			const { image, fullName, hasImage } = getImageOrName(user)
-
+	const renderList = () => {
+		if (usersLoading)
 			return (
-				<ListItemCommon
-					description={user.statusInfo.description || '...'}
-					title={fullName}
-					image={{ type: hasImage ? 'url' : 'name', url: image, online: false }}
-				/>
+				<>
+					<ListItemCommon skeleton />
+					<ListItemCommon skeleton />
+					<ListItemCommon skeleton />
+				</>
 			)
-		}) || null
+		return (
+			serachUsersList.map(user => {
+				return <SwiperFriendList user={user} />
+			}) || null
+		)
+	}
 
 	return (
 		<div>

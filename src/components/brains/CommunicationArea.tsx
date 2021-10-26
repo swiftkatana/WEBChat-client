@@ -23,7 +23,7 @@ export const CommunicationArea = () => {
 	//----- reconnect to the server if we lost connnection when we logged in ------------
 	useEffect(() => {
 		Io.on('disconnect', socket => {
-			if (isLoggedIn) sendIoMessage({ type: Io_message_type.LOGIN, data: user.securityInfo.email })
+			if (isLoggedIn) sendIoMessage({ type: Io_message_type.LOGIN, data: user._id })
 		})
 	}, [user, isLoggedIn])
 

@@ -1,4 +1,5 @@
-export const INS = {
+import { IlanguageWords } from '../interfaces/language/index'
+export const INS: { [key: string]: IlanguageWords } = {
 	English: {
 		errors: {
 			searchUsersForFriend: 'didnt find people with this serach ',
@@ -11,8 +12,24 @@ export const INS = {
 			'Network Error': 'we have Network Error please try agian in a few minutes',
 		},
 		navBtn: {
-			signIn: 'SignIn',
+			'Sign In/Up': 'SignIn',
 			signOut: 'SignOut',
+			Home: 'Home',
+			Friends: 'Friends',
+		},
+		relationships: {
+			actionButton: {
+				block: 'Block',
+				sendReq: 'Send Request',
+				accept: 'Aceept',
+				unblock: 'Un Block',
+				delete: 'Delete',
+			},
+			buttons: {
+				block: 'Blocks',
+				friends: 'Friends',
+				pending: 'Pending',
+			},
 		},
 		loginRegisterScreen: {
 			login: {
@@ -69,8 +86,24 @@ export const INS = {
 			'Network Error': 'יש לנו שגיאת רשת אנא נסה שוב בעוד מספר דקות ',
 		},
 		navBtn: {
-			signIn: 'להתחבר',
+			'Sign In/Up': 'להתחבר',
 			signOut: 'להתנתק',
+			Home: 'ראשי',
+			Friends: 'חברים',
+		},
+		relationships: {
+			actionButton: {
+				block: 'חסום',
+				sendReq: 'שלח בקשה',
+				accept: 'קבל',
+				unblock: 'ביטול חסימה',
+				delete: 'מחיקה',
+			},
+			buttons: {
+				block: 'חסומים',
+				friends: 'חברים',
+				pending: 'ממתינם ',
+			},
 		},
 		loginRegisterScreen: {
 			login: {
@@ -93,8 +126,6 @@ export const INS = {
 				placeholder: 'הכנס סיסמה חזקה ',
 				error: 'וספרות (A-Z)ותו גדול (a-z)  על הסיסמה להיות מינימום 7 תווים ולהכיל תווים  ',
 				leabel: 'סיסמה',
-				leabel2: 'וידוי סיסמה ',
-				placeholder2: 'הכנס את הסיסמה שינית',
 			},
 			firstName: {
 				error: 'צריך להכניס שם פרטי בלי מספרים ולהכיל 2 תווים לפחות',

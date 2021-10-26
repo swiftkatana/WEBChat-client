@@ -1,10 +1,11 @@
 import { IApiErrorData } from 'interfaces/api'
-import { relationship_status } from '../../enums/relationship_status'
-import { relationship_types } from '../../enums/relationship_types'
+import { relationship_status, relationship_loading } from 'enums/relationship_status'
+import { relationship_types } from 'enums/relationship_types'
 export interface IRelationship {
 	_id: string
 	status: relationship_status
-	users: string[]
+	userId1: string
+	userId2: string
 	chatId: string
 	createAt: number
 	updateAt: number
@@ -15,9 +16,14 @@ export interface IRelationshipState {
 	currentRequestId: string | undefined
 	relationships: { [key: string]: IRelationship }
 	error: IApiErrorData | null
-	loading: boolean
+	loading: relationship_loading | null
 }
 export interface IParamatersUpdateRelationship {
-	id: string
-	type: relationship_status
+	status: relationship_status
+	data: any
+}
+
+export interface IParamatersCreateRelationship {
+	usersIds: string[]
+	type: relationship_types
 }

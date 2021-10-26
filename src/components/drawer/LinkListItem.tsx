@@ -10,14 +10,16 @@ interface Props {
 	path: string
 	name: string
 	show: boolean
+	onClick?: () => void
 }
 
-export const LinkListItem = ({ path, name, show }: Props) => {
+export const LinkListItem = ({ path, name, show, onClick }: Props) => {
 	const [disabled, setDisabled] = useState(false)
 	const isLoggedIn = useSelector(userLoggedInSelector)
 	const location = useLocation()
-	const onClick = () => {
+	const handleClick = () => {
 		changeURL(path)
+		onClick && onClick()
 	}
 	useEffect(() => {
 		if (location.pathname === path) setDisabled(true)
@@ -26,7 +28,7 @@ export const LinkListItem = ({ path, name, show }: Props) => {
 
 	if ((isLoggedIn && show) || (!show && !isLoggedIn))
 		return (
-			<ListItem button disabled={disabled} onClick={onClick} key={name}>
+			<ListItem button disabled={disabled} onClick={handleClick} key={name}>
 				<ListItemText primary={name} />
 			</ListItem>
 		)

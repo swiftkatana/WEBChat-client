@@ -8,6 +8,12 @@ export interface ILanguagesKey {
 	English: IlanguageWords
 	Hebrew: IlanguageWords
 }
+export interface ILangNavbarState {
+	'Sign In/Up': string
+	signOut: string
+	Home: string
+	Friends: string
+}
 
 export interface IlanguageWords {
 	errors: {
@@ -17,10 +23,22 @@ export interface IlanguageWords {
 		usersNotFound: string
 		UserIsAlreadyCreated: string
 		DBError: string
+		'Network Error': string
 	}
-	navBtn: {
-		signIn: string
-		signOut: string
+	navBtn: ILangNavbarState
+	relationships: {
+		actionButton: {
+			block: string
+			accept: string
+			unblock: string
+			sendReq: string
+			delete: string
+		}
+		buttons: {
+			block: string
+			friends: string
+			pending: string
+		}
 	}
 	loginRegisterScreen: {
 		login: {

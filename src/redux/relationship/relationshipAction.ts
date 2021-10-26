@@ -7,7 +7,10 @@ import { IStoreRootState } from '../../interfaces/redux/store'
 import { ERROR_LIST } from '../../enums/error_list copy'
 import apiRequests from 'api/apiRequests'
 import { IApiError } from '../../interfaces/api/index'
-import { IParamatersUpdateRelationship } from 'interfaces/relationship'
+import {
+	IParamatersCreateRelationship,
+	IParamatersUpdateRelationship,
+} from 'interfaces/relationship'
 
 export const getAllRelationship = createAsyncThunk(
 	'relationship/getAll',
@@ -30,6 +33,26 @@ export const getAllRelationship = createAsyncThunk(
 	}
 )
 
+export const createRelationship = createAsyncThunk(
+	'relationship/createReqest',
+	async (
+		data: IParamatersCreateRelationship,
+		{ getState, requestId, rejectWithValue, dispatch }
+	): Promise<IResponseRelationships> => {
+		try {
+			const state = getState() as IStoreRootState
+			const { loading, currentRequestId } = state.relationship
+			if (!loading || requestId !== currentRequestId)
+				throw rejectWithValue(ERROR_LIST.TOO_MANY_REQUESTS)
+
+			const res = await apiRequests.createRelationshipRequest(data)
+			return res
+		} catch (e) {
+			const error = e as IApiError
+			throw rejectWithValue(error.response.data)
+		}
+	}
+)
 export const updateRelationship = createAsyncThunk(
 	'relationship/updateReqest',
 	async (

@@ -15,6 +15,10 @@ import { Theme } from '@mui/material'
 import { LangChangeMode } from '../common/LangChangeMode'
 import { LinkListItem } from '../drawer/LinkListItem'
 import routes from '../../routes/routes'
+import { useSelector } from 'react-redux'
+import { languageWordsSelector } from 'redux/language/languageSelector'
+import { LogOutButton } from 'components/loginRegister/LogOutButton'
+import { ILangNavbarState } from 'interfaces/language'
 
 const drawerWidth = 240
 
@@ -40,27 +44,48 @@ const useStyles = makeStyles((theme: Theme) =>
 		header: {
 			backgroundColor: theme.palette.primary.light,
 		},
+		drawerFooter: {
+			display: 'flex',
+			width: '100%',
+			justifyItems: 'center',
+			textAlign: 'center',
+			alignItems: 'center',
+		},
 	})
 )
 export default function DrawerPage({ window, children }: Props) {
 	const classes = useStyles()
 	const [mobileOpen, setMobileOpen] = useState(false)
-
+	const languages = useSelector(languageWordsSelector)
 	const handleDrawerToggle = () => setMobileOpen(!mobileOpen)
 
-	const drawer = (
-		<div dir={'ltr'}>
-			<Toolbar />
-			<Divider />
-			<List>
-				{routes.map(route => (
-					<LinkListItem path={route.path} show={route.private} name={route.name} />
-				))}
-			</List>
-			<Divider />
-			<LangChangeMode />
-		</div>
-	)
+	const drawer = (mobile = false) => {
+		const handler = () => {
+			if (mobile) handleDrawerToggle()
+		}
+		return (
+			<div dir={'ltr'}>
+				<Toolbar />
+				<Divider />
+				<List>
+					{routes.map(route => (
+						<LinkListItem
+							onClick={handler}
+							path={route.path}
+							show={route.private}
+							name={languages.navBtn[route.name as keyof ILangNavbarState]}
+						/>
+					))}
+				</List>
+				<Divider />
+				<div className={classes.drawerFooter}>
+					<LangChangeMode size='2rem' />
+					<LogOutButton onClick={handleDrawerToggle} size='2rem' />
+				</div>
+			</div>
+		)
+	}
+
 	const container = window !== undefined ? () => window().document.body : undefined
 
 	return (
@@ -107,7 +132,7 @@ export default function DrawerPage({ window, children }: Props) {
 						'& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
 					}}
 				>
-					{drawer}
+					{drawer(true)}
 				</Drawer>
 				<Drawer
 					variant='permanent'
@@ -117,7 +142,7 @@ export default function DrawerPage({ window, children }: Props) {
 					}}
 					open
 				>
-					{drawer}
+					{drawer()}
 				</Drawer>
 			</Box>
 			<Box className={classes.root} component='main' sx={{ flexGrow: 1, p: 3, height: '100%' }}>

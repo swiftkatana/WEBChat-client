@@ -14,6 +14,7 @@ const useStyles = makeStyles<Theme>(({ breakpoints, palette }) =>
 				backgroundColor: '#FFFFFF',
 			},
 		},
+
 		changeModeRL: {
 			[breakpoints.up('md')]: {
 				width: '30%',
@@ -26,7 +27,7 @@ const useStyles = makeStyles<Theme>(({ breakpoints, palette }) =>
 				width: '80%',
 			},
 
-			animationName: 'onClick',
+			animationName: 'changeModeLoginRegister',
 			animationDuration: '1s',
 			display: 'flex',
 			width: '10%',

@@ -50,16 +50,7 @@ export const ListItemCommon: FC<Props> = ({
 	}
 	if (skeleton)
 		return (
-			<ListItem
-				className={classes.container}
-				secondaryAction={
-					<>
-						<Skeleton />
-						<Skeleton />
-					</>
-				}
-				disablePadding
-			>
+			<ListItem className={classes.container} secondaryAction={<Skeleton />} disablePadding>
 				<ListItemButton role={undefined} dense>
 					<ListItemAvatar>
 						<Skeleton animation='wave' variant='circular' width={40} height={40} />

@@ -1,7 +1,7 @@
 import { IUsersState } from './../../interfaces/user/index'
 import { createSlice } from '@reduxjs/toolkit'
 import { IUser } from '../../interfaces/user/index'
-import { signinUser, getUser, signUpUser } from './userAction'
+import { signinUser, getUser, signUpUser, signOut } from './userAction'
 
 const initialState = {
 	currentRequestId: undefined,
@@ -71,6 +71,30 @@ export const userSlice = createSlice({
 				state.currentRequestId = undefined
 			}
 		})
+
+		//-------------  SignOut ------------
+		builder.addCase(signOut.pending, (state, action) => {
+			if (!state.loading) {
+				state.loading = true
+				state.currentRequestId = action.meta.requestId
+			}
+		})
+		builder.addCase(signOut.fulfilled, (state, action) => {
+			state.user = {} as IUser
+			state.isLoggedIn = false
+			state.loading = false
+			state.currentRequestId = ''
+		})
+
+		builder.addCase(signOut.rejected, (state, action: any) => {
+			const { requestId } = action.meta
+			if (state.loading && state.currentRequestId === requestId) {
+				state.loading = false
+				state.error = action.payload
+				state.currentRequestId = undefined
+			}
+		})
+
 		//------------- get User ------------
 
 		builder.addCase(getUser.pending, (state, action) => {
@@ -92,7 +116,7 @@ export const userSlice = createSlice({
 			const { requestId } = action.meta
 			if (state.loading && state.currentRequestId === requestId) {
 				state.loading = false
-				state.error = action.payload
+				if (action.payload.message !== 'Unauthorized') state.error = action.payload
 				state.currentRequestId = undefined
 			}
 		})
